@@ -41,7 +41,7 @@ namespace burg {
 
     struct Authenticator {
 
-        enum auth_s {AUTH_CONTINUE=1, AUTH_SUCCESS=2, AUTH_REJECT=2};
+        enum auth_s {AUTH_CONTINUE=255, AUTH_SUCCESS=254, AUTH_REJECT=253};
 
         virtual ~Authenticator(){};
 
@@ -53,7 +53,7 @@ namespace burg {
 
     };
 
-    typedef boost::shared_ptr<Authenticator> authenticator_t;
+    typedef boost::shared_ptr<Authenticator> auth_t;
 
     struct Guard {
 

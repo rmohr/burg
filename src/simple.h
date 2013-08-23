@@ -6,7 +6,11 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/thread/shared_mutex.hpp>
 #include <utility>
-
+#include <cryptopp/cryptlib.h>
+#include <cryptopp/filters.h>
+#include <cryptopp/sha.h>
+#include <cryptopp/base64.h>
+#include <cryptopp/base32.h>
 
 namespace burg {
     namespace simple {
@@ -67,17 +71,33 @@ namespace burg {
 
         };
 
-        struct PlainEncryptor {
+        struct PlainFilter {
 
             std::string encrypt (std::string str){
                 return str;
             }
         };
 
-        template < class Encryptor >
-            struct SimpleStore : public Encryptor, public Store {
+        struct Sha256Filter {
 
-                using Encryptor::encrypt;
+            std::string encrypt (std::string str){
+                std::string digest;
+                CryptoPP::SHA256 hash;
+
+                CryptoPP::StringSource source(str, true,
+                        new CryptoPP::HashFilter(hash,
+                            new CryptoPP::Base64Encoder (
+                                new CryptoPP::StringSink(digest),false
+                                )
+                            ));
+                return digest;
+            }
+        };
+
+        template < class Filter >
+            struct SimpleStore : public Filter, public Store {
+
+                using Filter::encrypt;
 
                 SimpleStore(user_db_t db):_db(db){};  
 
@@ -93,7 +113,7 @@ namespace burg {
 
         struct SimpleAuthenticator;
 
-        typedef boost::shared_ptr<SimpleAuthenticator> simple_authenticator_t;
+        typedef boost::shared_ptr<SimpleAuthenticator> simple_auth_t;
 
         struct SimpleAuthenticator : public Authenticator {
 
@@ -105,7 +125,7 @@ namespace burg {
 
             virtual token_t get_token() = 0;
 
-            virtual simple_authenticator_t create() = 0;
+            virtual auth_t create() = 0;
 
             protected:
 
@@ -122,14 +142,14 @@ namespace burg {
         };
 
         template <class Regex>
-        struct SimpleRegexAuthenticator : public SimpleAuthenticator {
+        struct SimpleRegexAuthenticator : public Regex, public SimpleAuthenticator {
 
             using Regex::extract;
             using SimpleAuthenticator::_store;
 
 
-            simple_authenticator_t create() {
-                simple_authenticator_t new_auth(new SimpleRegexAuthenticator(_store));
+            auth_t create() {
+                auth_t new_auth(new SimpleRegexAuthenticator(_store));
                 return new_auth;
             }
 
