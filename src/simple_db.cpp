@@ -16,7 +16,7 @@ namespace burg{
             using namespace libconfig;
 
             Config cfg;
-            util::read_cfg(cfg, file_path);
+            burg::util::read_cfg(cfg, file_path);
 
             _db.clear();
             const Setting &root = cfg.getRoot();
@@ -54,7 +54,7 @@ namespace burg{
             using namespace libconfig;
 
             Config cfg;
-            util::read_cfg(cfg, file_path);
+            burg::util::read_cfg(cfg, file_path);
 
             _db.clear();
             const Setting &root = cfg.getRoot();

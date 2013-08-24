@@ -30,4 +30,7 @@ AC_TYPE_SIZE_T
 
 AC_CONFIG_FILES([include/Makefile Makefile tests/Makefile src/Makefile])
 AC_CONFIG_SUBDIRS([lib/gmock])
+
+AC_LIBTOOL_DLOPEN
+AC_PROG_LIBTOOL
 AC_OUTPUT
