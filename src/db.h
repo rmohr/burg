@@ -12,7 +12,7 @@ namespace burg {
 
         virtual void reload() = 0;
 
-        virtual bool lookup(std::string user, std::string passwd) = 0;
+        virtual bool lookup(const std::string& user, const std::string& passwd) = 0;
 
     };
 
@@ -24,12 +24,12 @@ namespace burg {
 
         virtual void reload() = 0;
 
-        virtual roles_t_vec lookup(std::string user) = 0;
+        virtual roles_t_vec lookup(const std::string& user) = 0;
     };
 
     struct Store {
 
-        virtual bool authenticate(std::string user, std::string passwd) = 0;
+        virtual bool authenticate(const std::string& user, const std::string& passwd) = 0;
 
     };
 

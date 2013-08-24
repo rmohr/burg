@@ -30,9 +30,9 @@ namespace burg {
 
         virtual void set_permissions( permission_vec_t permissions) = 0;
 
-        virtual std::string  encode(std::string raw_data) = 0;
+        virtual std::string  encode(const std::string& raw_data) = 0;
 
-        virtual std::string  decode(std::string raw_data) = 0;
+        virtual std::string  decode(const std::string& raw_data) = 0;
 
         virtual std::string  id() = 0;
     };
@@ -45,7 +45,7 @@ namespace burg {
 
         virtual ~Authenticator(){};
 
-        virtual auth_s authenticate(std::string raw_token) = 0;
+        virtual auth_s authenticate(const std::string& raw_token) = 0;
 
         virtual std::string get_response() = 0;
 

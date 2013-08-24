@@ -1,4 +1,5 @@
-#include "simple.h"
+#include "simple_db.h"
+#include "simple_auth.h"
 #include <iostream>
 int main(int argc, char** argv){
     burg::token_t token = burg::token_t(new burg::simple::SimpleToken("roman"));
