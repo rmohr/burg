@@ -86,5 +86,12 @@ namespace burg{
             return roles_vec_t(new roles_t_vec());
         }
 
+        SimpleRolesStore::SimpleRolesStore(roles_db_t db):_db(db){}
+
+        roles_vec_t SimpleRolesStore::get_roles(const std::string& user){
+            return _db->lookup(user);
+        }
+
     }
+
 }

@@ -51,7 +51,10 @@ namespace burg{
             return _id;
         }
 
-        SimpleAuthenticator::SimpleAuthenticator(store_t store):_store(store){};
+        SimpleAuthenticator::SimpleAuthenticator(user_store_t store):_store(store){};
+
+
+        SimpleAuthorizer::SimpleAuthorizer(roles_store_t store):_store(store){};
 
 
     }

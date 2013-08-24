@@ -29,11 +29,16 @@ int main(int argc, char** argv){
 
 
     using namespace burg::simple;
-    burg::store_t store = burg::store_t(new SimpleStore<Sha256Filter>(user_db));
+    burg::user_store_t store = burg::user_store_t(new SimpleUserStore<Sha256Filter>(user_db));
     std::cout << store->authenticate("roman", "hallo") << std::endl;
     std::cout << store->authenticate("roma", "hallo") << std::endl;
     std::cout << store->authenticate("roman", "hall") << std::endl;
 
+    burg::roles_store_t roles_store = burg::roles_store_t(new SimpleRolesStore(roles_db));
+    roles = roles_store->get_roles("roman");
+    BOOST_FOREACH(std::string role, *roles){
+        std::cout << role << std::endl;
+    }
     simple_auth_t factory(new SimpleRegexAuthenticator<CSVRegex>(store));
     burg::auth_t auth = factory->create();
 
@@ -43,8 +48,15 @@ int main(int argc, char** argv){
         std::cout << "failed" << std::endl;
     }
 
+    burg::autz_t autz = burg::autz_t(new SimpleRegexAuthorizer<PassRegex>(roles_store));
+
     if (burg::Authenticator::AUTH_SUCCESS == auth->authenticate("roman,hallo")){
-        std::cout << auth->get_token()->id() << std::endl;
+        burg::token_t token = auth->get_token();
+        std::cout << token->id() << std::endl;
+        autz->set_permissions(token);
+        burg::permission_t p1 = burg::permission_t (new Role("lala"));
+        std::cout << token->has_permission(permission) << std::endl;
+        std::cout << token->has_permission(p1) << std::endl;
     } else {
         std::cout << "failed" << std::endl;
     }

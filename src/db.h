@@ -28,13 +28,20 @@ namespace burg {
         virtual roles_vec_t lookup(const std::string& user) = 0;
     };
 
-    struct Store {
+    struct UserStore {
 
         virtual bool authenticate(const std::string& user, const std::string& passwd) = 0;
 
     };
 
-    typedef boost::shared_ptr<Store> store_t;
+    struct RolesStore {
+
+        virtual roles_vec_t get_roles(const std::string& user) = 0;
+
+    };
+
+    typedef boost::shared_ptr<UserStore> user_store_t;
+    typedef boost::shared_ptr<RolesStore> roles_store_t;
 
     typedef boost::shared_ptr<UserDB> user_db_t;
     typedef boost::shared_ptr<RolesDB> roles_db_t;

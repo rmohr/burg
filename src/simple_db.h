@@ -81,12 +81,12 @@ namespace burg {
             }
         };
 
-        template < class Filter >
-            struct SimpleStore : public Filter, public Store {
+        template < class Filter = PlainFilter >
+            struct SimpleUserStore : public Filter, public UserStore {
 
                 using Filter::encrypt;
 
-                SimpleStore(user_db_t db):_db(db){};  
+                SimpleUserStore(user_db_t db):_db(db){}  
 
                 bool authenticate(const std::string& user, const std::string& passwd){
                     return _db->lookup(user, encrypt(passwd));
@@ -97,6 +97,16 @@ namespace burg {
                 user_db_t _db;
 
             };
+
+        struct SimpleRolesStore : public RolesStore {
+
+            SimpleRolesStore(roles_db_t db);  
+
+            roles_vec_t get_roles(const std::string& user);
+
+            private:
+                roles_db_t _db;
+        };
     }
 }
 #endif

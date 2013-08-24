@@ -55,14 +55,15 @@ namespace burg {
 
     typedef boost::shared_ptr<Authenticator> auth_t;
 
-    struct Guard {
+    struct Authorizer {
 
-        virtual ~Guard(){};
+        virtual ~Authorizer(){};
 
-        virtual permission_vec_t get_permissions(token_t token) = 0;
+        virtual void set_permissions(token_t token) = 0;
+
     };
 
-    typedef boost::shared_ptr<Guard> guard_t;
+    typedef boost::shared_ptr<Authorizer> autz_t;
 
 }
 #endif
