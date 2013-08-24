@@ -3,9 +3,15 @@
 #include <iostream>
 #include <boost/foreach.hpp>
 #include "gtest/gtest.h"
+#include "gmock/gmock.h"
+#include "mock.h"
+
+using ::testing::Return;
+using ::testing::_;
+using ::testing::InSequence;
 
 int main(int argc, char** argv){
-    ::testing::InitGoogleTest(&argc, argv);
+    ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }
 
@@ -21,6 +27,73 @@ TEST(basicTests, permissions) {
     ASSERT_FALSE (permission->satisfies(permission1));
     ASSERT_FALSE (permission1->satisfies(permission));
 }
+
+TEST(basicTests, databases) {
+    using namespace burg::simple;
+    burg::user_db_t user_db = burg::user_db_t(new FileUserDB("./db.cfg"));
+    burg::roles_db_t roles_db = burg::roles_db_t(new FileRolesDB("./db.cfg"));
+
+    std::string encrypted = "03UdM/nNUEnErytGJzVFfk07rxMLy7h/OJ40n7rrILk=";
+    std::string plain = "hallo";
+
+    ASSERT_FALSE(user_db->lookup("roman", plain));
+
+    ASSERT_TRUE(user_db->lookup("roman", encrypted));
+    
+    burg::roles_vec_t roles = roles_db->lookup("roman");
+    std::vector<std::string> expected_roles;
+    expected_roles.push_back("admin");
+    expected_roles.push_back("user");
+    EXPECT_THAT(expected_roles, ::testing::ContainerEq(*roles));
+
+}
+
+
+TEST(mockTests, user_stores) {
+
+    using namespace burg::simple;
+    MockUserDB* sha_user_db_ptr = new MockUserDB();
+    MockUserDB* plain_user_db_ptr = new MockUserDB();
+    burg::user_db_t sha_user_db(sha_user_db_ptr);
+    burg::user_db_t plain_user_db(plain_user_db_ptr);
+    burg::user_store_t sha_user_store = burg::user_store_t(new SimpleUserStore<Sha256Filter>(sha_user_db));
+    burg::user_store_t plain_user_store = burg::user_store_t(new SimpleUserStore<PlainFilter>(plain_user_db));
+
+    std::string encrypted = "03UdM/nNUEnErytGJzVFfk07rxMLy7h/OJ40n7rrILk=";
+    std::string plain = "hallo";
+
+    EXPECT_CALL(*sha_user_db_ptr, lookup("roman", _)).WillOnce(Return(false));
+    EXPECT_CALL(*plain_user_db_ptr, lookup("roman", _)).WillOnce(Return(false));
+    EXPECT_CALL(*sha_user_db_ptr, lookup("roman", encrypted)).WillOnce(Return(true));
+    EXPECT_CALL(*plain_user_db_ptr, lookup("roman", plain)).WillOnce(Return(true));
+
+    EXPECT_TRUE(sha_user_store->authenticate("roman", plain));
+    EXPECT_FALSE(sha_user_store->authenticate("roman", encrypted));
+
+    EXPECT_TRUE(plain_user_store->authenticate("roman", plain));
+    EXPECT_FALSE(plain_user_store->authenticate("roman", encrypted));
+}
+
+TEST(mockTests, roles_stores) {
+
+    using namespace burg::simple;
+    MockRolesDB* roles_db_ptr = new MockRolesDB();
+    burg::roles_db_t roles_db(roles_db_ptr);
+    burg::roles_store_t roles_store = burg::roles_store_t(new SimpleRolesStore(roles_db));
+
+
+    burg::roles_vec_t empty(new burg::roles_t_vec());
+    burg::roles_vec_t full(new burg::roles_t_vec());
+    full->push_back("admin");
+    full->push_back("user");
+
+    EXPECT_CALL(*roles_db_ptr, lookup(_)).WillOnce(Return(empty));
+    EXPECT_CALL(*roles_db_ptr, lookup("roman")).WillOnce(Return(full));
+
+    EXPECT_THAT(*empty, ::testing::ContainerEq(*(roles_store->get_roles("anonymous"))));
+    EXPECT_THAT(*full, ::testing::ContainerEq(*(roles_store->get_roles("roman"))));
+}
+
 
 TEST(fullChainTests, simpleTest) {
 

@@ -2,7 +2,7 @@
 
 AC_PREREQ([2.59])
 AC_INIT([burg], [0.1.0], [roman@fenkhuber.at])
-AC_CONFIG_SRCDIR([include/remote.h])
+AC_CONFIG_SRCDIR([include/burg/auth.h])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([foreign])
