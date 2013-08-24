@@ -1,3 +1,23 @@
+/*
+ *  Copyright 2013, Roman Mohr <roman@fenkhuber.at>
+ *
+ *  This file is part of burg.
+ *
+ *  Burg is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Burg is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with burg.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 #include "burg/simple_db.h"
 #include "burg/simple_auth.h"
 #include <iostream>
@@ -39,7 +59,7 @@ TEST(basicTests, databases) {
     ASSERT_FALSE(user_db->lookup("roman", plain));
 
     ASSERT_TRUE(user_db->lookup("roman", encrypted));
-    
+
     burg::roles_vec_t roles = roles_db->lookup("roman");
     std::vector<std::string> expected_roles;
     expected_roles.push_back("admin");

@@ -1,3 +1,23 @@
+/*
+ *  Copyright 2013, Roman Mohr <roman@fenkhuber.at>
+ *
+ *  This file is part of burg.
+ *
+ *  Burg is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Burg is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with burg.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 #ifndef __BURG_SIMPLE_DB_H_
 #define __BURG_SIMPLE_DB_H_
 #include "auth.h"
@@ -37,7 +57,7 @@ namespace burg {
     };
 
         struct FileUserDB : public UserDB {
-            
+
             typedef std::map<std::string, std::string> db_t;
             typedef std::map<std::string, std::string>::iterator db_it_t;
 
@@ -86,7 +106,7 @@ namespace burg {
 
                 using Filter::encrypt;
 
-                SimpleUserStore(user_db_t db):_db(db){}  
+                SimpleUserStore(user_db_t db):_db(db){}
 
                 bool authenticate(const std::string& user, const std::string& passwd){
                     return _db->lookup(user, encrypt(passwd));
@@ -100,7 +120,7 @@ namespace burg {
 
         struct SimpleRolesStore : public RolesStore {
 
-            SimpleRolesStore(roles_db_t db);  
+            SimpleRolesStore(roles_db_t db);
 
             roles_vec_t get_roles(const std::string& user);
 
