@@ -18,9 +18,11 @@
  */
 
 
-#ifndef __BURG_AUTH_H_
-#define __BURG_AUTH_H_
+#ifndef INCLUDE_BURG_AUTH_H_
+#define INCLUDE_BURG_AUTH_H_
+
 #include <boost/shared_ptr.hpp>
+#include <string>
 #include <vector>
 
 namespace burg {
@@ -29,26 +31,23 @@ namespace burg {
     typedef boost::shared_ptr<Permission> permission_t;
 
     struct Permission {
-
-        virtual ~Permission(){};
+        virtual ~Permission() {}
 
         virtual bool satisfies(permission_t other_permission) = 0;
 
         virtual std::string id() = 0;
-
     };
 
     typedef std::vector<permission_t> permission_vec_t;
 
     struct Token {
-
-        virtual ~Token(){};
+        virtual ~Token() {}
 
         virtual bool authenticated() = 0;
 
         virtual bool has_permission(permission_t perm) = 0;
 
-        virtual void set_permissions( permission_vec_t permissions) = 0;
+        virtual void set_permissions(permission_vec_t permissions) = 0;
 
         virtual std::string  encode(const std::string& raw_data) = 0;
 
@@ -60,30 +59,27 @@ namespace burg {
     typedef boost::shared_ptr<Token> token_t;
 
     struct Authenticator {
+        enum auth_s {AUTH_CONTINUE = 255, AUTH_SUCCESS = 254,
+            AUTH_REJECT = 253};
 
-        enum auth_s {AUTH_CONTINUE=255, AUTH_SUCCESS=254, AUTH_REJECT=253};
-
-        virtual ~Authenticator(){};
+        virtual ~Authenticator() {}
 
         virtual auth_s authenticate(const std::string& raw_token) = 0;
 
         virtual std::string get_response() = 0;
 
         virtual token_t get_token() = 0;
-
     };
 
     typedef boost::shared_ptr<Authenticator> auth_t;
 
     struct Authorizer {
-
-        virtual ~Authorizer(){};
+        virtual ~Authorizer() {}
 
         virtual void set_permissions(token_t token) = 0;
-
     };
 
     typedef boost::shared_ptr<Authorizer> autz_t;
 
-}
-#endif
+}  // namespace burg
+#endif  // INCLUDE_BURG_AUTH_H_

@@ -18,16 +18,18 @@
  */
 
 
-#ifndef __BURG_UTIL_H_
-#define __BURG_UTIL_H_
+#ifndef SRC_UTIL_H_
+#define SRC_UTIL_H_
+
 #include <libconfig.h++>
+#include <string>
+
 namespace burg {
     namespace util {
 
-        struct ConfigException:public std::exception{
-
-            ConfigException(const std::string msg):_msg(msg){}
-            ~ConfigException() throw(){};
+        struct ConfigException:public std::exception {
+            explicit ConfigException(const std::string msg):_msg(msg) {}
+            ~ConfigException() throw() {}
             virtual const char* what() const throw() {
                 return _msg.c_str();
             }
@@ -36,6 +38,6 @@ namespace burg {
         };
 
         void read_cfg(libconfig::Config& cfg, std::string file_path);
-    }
-}
-#endif
+    }  // namespace util
+}  // namespace burg
+#endif  // SRC_UTIL_H_

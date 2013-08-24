@@ -18,25 +18,29 @@
  */
 
 
-#ifndef __BURG_SIMPLE_AUTH_H_
-#define __BURG_SIMPLE_AUTH_H_
-#include "auth.h"
-#include "db.h"
+#ifndef INCLUDE_BURG_SIMPLE_AUTH_H_
+#define INCLUDE_BURG_SIMPLE_AUTH_H_
 #include <boost/algorithm/string.hpp>
 #include <boost/foreach.hpp>
+
 #include <utility>
+
+#include <string>
+#include <vector>
+
+#include "./auth.h"
+#include "./db.h"
 
 namespace burg {
     namespace simple {
         struct SimpleToken : public Token {
-
-            SimpleToken(const std::string& identifier);
+            explicit SimpleToken(const std::string& identifier);
 
             bool authenticated();
 
             bool has_permission(permission_t perm);
 
-            void set_permissions( permission_vec_t permissions);
+            void set_permissions(permission_vec_t permissions);
 
             std::string encode(const std::string& raw_data);
 
@@ -45,21 +49,18 @@ namespace burg {
             std::string id();
 
             private:
-
             permission_vec_t _permissions;
             std::string _identifier;
         };
 
         struct Role : Permission {
-
-            Role(const std::string& id);
+            explicit Role(const std::string& id);
 
             bool satisfies(permission_t other_permission);
 
             std::string id();
 
             private:
-
             std::string _id;
         };
 
@@ -68,8 +69,7 @@ namespace burg {
         typedef boost::shared_ptr<SimpleAuthenticator> simple_auth_t;
 
         struct SimpleAuthenticator : public Authenticator {
-
-            SimpleAuthenticator(user_store_t store);
+            explicit SimpleAuthenticator(user_store_t store);
 
             virtual auth_s authenticate(const std::string& raw_token) = 0;
 
@@ -80,9 +80,7 @@ namespace burg {
             virtual auth_t create() = 0;
 
             protected:
-
             user_store_t _store;
-
         };
 
         struct SimpleAuthorizer;
@@ -90,19 +88,18 @@ namespace burg {
         typedef boost::shared_ptr<SimpleAuthorizer> simple_autz_t;
 
         struct SimpleAuthorizer : public Authorizer {
-
-            SimpleAuthorizer(roles_store_t store);
+            explicit SimpleAuthorizer(roles_store_t store);
 
             virtual void set_permissions(token_t token) = 0;
 
             protected:
-
             roles_store_t _store;
         };
 
 
         struct CSVRegex {
-            std::pair<std::string, std::string> extract(const std::string& raw_token){
+            std::pair<std::string, std::string>
+                extract(const std::string& raw_token) {
                 std::vector<std::string> strs;
                 boost::split(strs, raw_token, boost::is_any_of(","));
                 return std::make_pair(strs[0], strs[1]);
@@ -110,8 +107,8 @@ namespace burg {
         };
 
         template <class Regex = CSVRegex>
-        struct SimpleRegexAuthenticator : public Regex, public SimpleAuthenticator {
-
+        struct SimpleRegexAuthenticator :
+            public Regex, public SimpleAuthenticator {
             using Regex::extract;
             using SimpleAuthenticator::_store;
 
@@ -121,19 +118,19 @@ namespace burg {
                 return new_auth;
             }
 
-            SimpleRegexAuthenticator(user_store_t store):
-                SimpleAuthenticator(store){}
+            explicit SimpleRegexAuthenticator(user_store_t store):
+                SimpleAuthenticator(store) {}
 
-            std::string get_response(){
+            std::string get_response() {
                 throw new std::runtime_error("this should never be called.");
             }
 
-            token_t get_token(){
+            token_t get_token() {
                 token_t token(new SimpleToken(_id));
                 return token;
             }
 
-            auth_s authenticate(const std::string& raw_token){
+            auth_s authenticate(const std::string& raw_token) {
                 std::pair<std::string, std::string> p = extract(raw_token);
                 _id = p.first;
                 if (_store->authenticate(p.first, p.second)) {
@@ -143,36 +140,33 @@ namespace burg {
             }
 
             private:
-
             std::string _id;
         };
 
         struct PassRegex {
-
-            std::string extract(const std::string& id){
+            std::string extract(const std::string& id) {
                 return id;
             }
-
         };
 
         template <class Regex = PassRegex>
         struct SimpleRegexAuthorizer : public Regex, public SimpleAuthorizer {
             using Regex::extract;
+            explicit SimpleRegexAuthorizer(roles_store_t store):
+                SimpleAuthorizer(store) {}
 
-            SimpleRegexAuthorizer(roles_store_t store):SimpleAuthorizer(store){}
-
-            void set_permissions(token_t token){
+            void set_permissions(token_t token) {
                 std::string id = extract(token->id());
                 burg::roles_vec_t roles = _store->get_roles(id);
                 permission_vec_t permissions;
-                BOOST_FOREACH (std::string role, *roles){
+
+                BOOST_FOREACH(std::string role, *roles) {
                     permission_t permission(new Role(role));
                     permissions.push_back(permission);
                 }
                 token->set_permissions(permissions);
             };
         };
-
-    }
-}
-#endif
+    }  // namespace simple
+}  // namespace burg
+#endif  // INCLUDE_BURG_SIMPLE_AUTH_H_
