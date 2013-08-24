@@ -30,11 +30,31 @@ namespace burg {
     struct Permission;
     typedef boost::shared_ptr<Permission> permission_t;
 
+    /**
+     * @brief Interface for everything thats a permission.
+     *
+     * When a permission type implements this interface it can be used
+     * by every implementation of the security token interface Token.
+     */
     struct Permission {
         virtual ~Permission() {}
 
+        /**
+         * @brief Indicates weather the given Permission argument is satisfied
+         *        by this permission.
+         *
+         * @param other_permission TODO
+         *
+         * @return true if satisfied, otherwise false
+         */
         virtual bool satisfies(permission_t other_permission) = 0;
 
+
+        /**
+         * @brief Alpahnumerical identifiere
+         *
+         * @return returns an alphanumerical identifier of this permission
+         */
         virtual std::string id() = 0;
     };
 
