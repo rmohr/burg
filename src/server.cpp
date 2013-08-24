@@ -1,6 +1,8 @@
 #include "simple_db.h"
 #include "simple_auth.h"
 #include <iostream>
+#include <boost/foreach.hpp>
+
 int main(int argc, char** argv){
     burg::token_t token = burg::token_t(new burg::simple::SimpleToken("roman"));
     burg::permission_t permission = burg::permission_t(new burg::simple::Role("admin"));
@@ -12,6 +14,19 @@ int main(int argc, char** argv){
     std::cout << user_db->lookup("roman", "hallo") << std::endl;
     std::cout << user_db->lookup("roma", "hallo") << std::endl;
     std::cout << user_db->lookup("roman", "hall") << std::endl;
+
+    burg::roles_db_t roles_db = burg::roles_db_t(new burg::simple::FileRolesDB("./db.cfg"));
+    burg::roles_vec_t roles = roles_db->lookup("roman");
+
+    BOOST_FOREACH(std::string role, *roles){
+        std::cout << role << std::endl;
+    }
+    roles = roles_db->lookup("roma");
+
+    BOOST_FOREACH(std::string role, *roles){
+        std::cout << role << std::endl;
+    }
+
 
     using namespace burg::simple;
     burg::store_t store = burg::store_t(new SimpleStore<Sha256Filter>(user_db));

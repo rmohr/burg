@@ -14,12 +14,33 @@
 
 namespace burg {
     namespace simple {
+
+    struct FileRolesDB : public RolesDB {
+
+        typedef std::map<std::string, roles_vec_t> db_t;
+        typedef std::map<std::string, roles_vec_t>::iterator db_it_t;
+
+        FileRolesDB(const std::string& file_path);
+
+        void reload();
+
+        virtual roles_vec_t lookup(const std::string& user);
+
+        private:
+
+        void _load(const std::string& file_path);
+
+        db_t  _db;
+        std::string _file_path;
+        boost::shared_mutex _mutex;
+
+    };
+
         struct FileUserDB : public UserDB {
             
             typedef std::map<std::string, std::string> db_t;
             typedef std::map<std::string, std::string>::iterator db_it_t;
 
-            boost::shared_mutex _mutex;
 
             FileUserDB(const std::string& file_path);
 
@@ -33,6 +54,7 @@ namespace burg {
 
             db_t  _db;
             std::string _file_path;
+            boost::shared_mutex _mutex;
 
         };
 
