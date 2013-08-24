@@ -47,11 +47,11 @@ namespace burg {
             _permissions = permissions;
         }
 
-        std::string SimpleToken::encode(const std::string& raw_data) {
+        std::string SimpleToken::encrypt(const std::string& raw_data) {
             return raw_data;
         }
 
-        std::string SimpleToken::decode(const std::string& raw_data) {
+        std::string SimpleToken::decrypt(const std::string& raw_data) {
             return raw_data;
         }
 

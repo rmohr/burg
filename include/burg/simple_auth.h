@@ -42,9 +42,9 @@ namespace burg {
 
             void set_permissions(permission_vec_t permissions);
 
-            std::string encode(const std::string& raw_data);
+            std::string encrypt(const std::string& raw_data);
 
-            std::string decode(const std::string& raw_data);
+            std::string decrypt(const std::string& raw_data);
 
             std::string id();
 

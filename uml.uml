@@ -1,0 +1,79 @@
+@startuml  img/uml.png
+Authenticator <|-down- SimpleAuthenticator
+SimpleAuthenticator <|-- "SimpleRegexAuthenticator<AuthRegex>"
+SimpleAuthenticator -right-> UserStore
+AuthRegex <|-up- "SimpleRegexAuthenticator<AuthRegex>"
+UserStore <|-- SimpleUserStore
+SimpleUserStore -right-> UserDB
+UserDB <|-- FileUserDB
+
+
+Authorizer <|-down- SimpleAuthorizer
+SimpleAuthorizer <|-down- "SimpleRegexAuthorizer<AutzRegex>"
+AutzRegex <|-up- "SimpleRegexAuthorizer<AutzRegex>"
+SimpleAuthorizer -right-> RolesStore
+RolesStore <|-down- SimpleRolesStore
+SimpleRolesStore -right-> RolesDB
+RolesDB <|-down- FileRolesDB
+
+Token <|-down- SimpleToken
+
+Permission <|-down- Role
+
+interface Authenticator {
++{abstract} +authenticate(String): auth_s
++{abstract} +get_response(): String
++{abstract} +get_token(): Token
+}
+
+interface Token {
++{abstract} authenticated(): bool
++{abstract} has_permission(Permission): bool
++{abstract} set_permissions(Permission[])
++{abstract} encrypt(String): String
++{abstract} decrypt(String): String
++{abstract} id(): String
+}
+
+interface Authorizer {
++{abstract} set_permissions(Token)
+}
+
+abstract class SimpleAuthorizer
+abstract class SimpleAuthenticator {
++{abstract} create(): Authenticator
+}
+
+interface UserStore {
++{abstract} authenticate(String, String): bool
+}
+
+interface RolesStore {
++{abstract} get_roles(String): String[]
+}
+
+interface Permission {
++{abstract} id(): String
++{abstract} satisfies(Permission): bool
+}
+
+interface RolesDB {
++{abstract} lookup(String): String[]
+}
+
+interface UserDB {
++{abstract} lookup(String, String): bool
+}
+
+class AutzRegex {
++extract(String): String
+}
+
+class AuthRegex {
++extract(String): String, String
+}
+
+class "SimpleRegexAuthenticator<AuthRegex>" {
+}
+
+@enduml

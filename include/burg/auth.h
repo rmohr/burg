@@ -69,9 +69,9 @@ namespace burg {
 
         virtual void set_permissions(permission_vec_t permissions) = 0;
 
-        virtual std::string  encode(const std::string& raw_data) = 0;
+        virtual std::string  encrypt(const std::string& raw_data) = 0;
 
-        virtual std::string  decode(const std::string& raw_data) = 0;
+        virtual std::string  decrypt(const std::string& raw_data) = 0;
 
         virtual std::string  id() = 0;
     };

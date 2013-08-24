@@ -1,0 +1,11 @@
+@startuml  img/auth.png
+[*] -down-> authenticate : AUTH_INIT
+authenticate -right-> callback : AUTH_CONTINUE
+callback --> authenticate : AUTH_CONTINUE
+authenticate --> reject : AUTH_REJECT 
+reject --> [*]
+authenticate --> generate_token : AUTH_SUCHESS
+generate_token --> [*]
+
+
+@enduml
