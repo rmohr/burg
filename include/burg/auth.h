@@ -31,7 +31,7 @@ namespace burg {
     typedef boost::shared_ptr<Permission> permission_t;
 
     /**
-     * @brief Interface for everything thats a permission.
+     * @brief Interface for everything thats a Permission.
      *
      * When a permission type implements this interface it can be used
      * by every implementation of the security token interface Token.
@@ -41,9 +41,9 @@ namespace burg {
 
         /**
          * @brief Indicates weather the given Permission argument is satisfied
-         *        by this permission.
+         * by this permission.
          *
-         * @param other_permission TODO
+         * @param other_permission permission to compare with
          *
          * @return true if satisfied, otherwise false
          */
@@ -51,51 +51,155 @@ namespace burg {
 
 
         /**
-         * @brief Alpahnumerical identifiere
+         * @brief Alpahnumerical identifier
          *
-         * @return returns an alphanumerical identifier of this permission
+         * @return an alphanumerical identifier of this permission
          */
         virtual std::string id() = 0;
     };
 
     typedef std::vector<permission_t> permission_vec_t;
 
+    /**
+     * @brief Interface for everything thats an authentication or authorization
+     * Token.
+     */
     struct Token {
         virtual ~Token() {}
 
+        /**
+         * @brief Indicates if a users authentication is still valid.
+         *
+         * good extension point for tokens which should only be valid for a
+         * specific time period.
+         *
+         * @return true if still authenticated, false otherwise
+         */
         virtual bool authenticated() = 0;
 
+        /**
+         * @brief indicates whether an authenticated user has a specific
+         * permission.
+         *
+         * @param perm permission to check for
+         *
+         * @return true if permission granted, false otherwise
+         */
         virtual bool has_permission(permission_t perm) = 0;
 
+        /**
+         * @brief tell the Token which permissions its user has.
+         *
+         * @param permissions permissions the authenticated user has.
+         */
         virtual void set_permissions(permission_vec_t permissions) = 0;
 
+        /**
+         * @brief can be used to encrypt data if a security layer has been
+         * negotiated by the Authorizer which created this token.
+         *
+         * @param raw_data the raw data to encrypt
+         *
+         * @return encrypted version of raw_data
+         */
         virtual std::string  encrypt(const std::string& raw_data) = 0;
 
+        /**
+         * @brief can be used to decrypt data if a security layer has been
+         * negotiated by the Authorizer which created this token.
+         *
+         * @param raw_data the raw data to decrypt
+         *
+         * @return decrypted version of raw_data
+         *
+         */
         virtual std::string  decrypt(const std::string& raw_data) = 0;
 
+        /**
+         * @brief Alpahnumerical identifier
+         *
+         * @return an alphanumerical identifier of the associated user
+         */
         virtual std::string  id() = 0;
     };
 
     typedef boost::shared_ptr<Token> token_t;
 
+    /**
+     * @brief Interface for everything thats an Authenticator
+     *
+     * an Authenticator is a stateful object. This means that every connecting
+     * client needs its own Authenticator until the authentication process has
+     * completed. Therefore a factory method exists in SimpleAuthenticator, to
+     * make spawning authenticators more convenient. After an authentication
+     * has finished, the Authenticator can be reused by another connection. If
+     * you want tu support a new authentication and/or encryption mechanism
+     * (e.g. SASL, GSSAPI, ... ) with this framework, the first step is to
+     * implement your own Authenticator.
+     */
     struct Authenticator {
-        enum auth_s {AUTH_CONTINUE = 255, AUTH_SUCCESS = 254,
-            AUTH_REJECT = 253};
+
+        /**
+         * @enum auth_s
+         * @brief current state of the authentication process
+         */
+        enum auth_s {
+        AUTH_CONTINUE = 255, /**< information from the client is needed*/
+            AUTH_SUCCESS = 254, /**< authentication was successful*/
+            AUTH_REJECT = 253 /**< authentication failed*/
+        };
 
         virtual ~Authenticator() {}
 
+        /**
+         * @brief call when the authentication for a fresh connection is
+         * initiated, or when new information for continuing the authentication
+         * process arrived.
+         *
+         * @param raw_token autentication information from the client, this
+         * contains either the data sent with the authentication process
+         * initiation, or the data sent by a callback request of the server to
+         * continue the authentication process.
+         *
+         * @return indicates the authentication state
+         */
         virtual auth_s authenticate(const std::string& raw_token) = 0;
 
+        /**
+         * @brief call when authenticate() returns Authenticator::AUTH_CONTINUE.
+         *
+         * The data return by this method needs to be sent back to the client
+         * to retrieve some more information that the authentication process
+         * can go on.
+         *
+         * @return the response which needs to be sent to the client
+         */
         virtual std::string get_response() = 0;
 
+
+        /**
+         * @brief call when authenticate() returns Authenticator::AUTH_SUCCESS.
+         *
+         * @return the new security Token of the successfully logged in user.
+         */
         virtual token_t get_token() = 0;
     };
 
     typedef boost::shared_ptr<Authenticator> auth_t;
 
+    /**
+     * @brief Interface of everything which should be used as an authorization
+     * information provider in the framework
+     */
     struct Authorizer {
         virtual ~Authorizer() {}
 
+        /**
+         * @brief looks up and sets the appropriate Permission%s for the
+         * provided security Token
+         *
+         * @param token the security Token for which the Permission%s to search for
+         */
         virtual void set_permissions(token_t token) = 0;
     };
 

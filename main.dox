@@ -1,10 +1,8 @@
 /**
-* @mainpage Example program
+* @mainpage Burg
 *
-* Description of the project
-* You can force new lines in the HTML documentation with <br>
-*
-* With the <img-keyword you can add own pictures
+* Burg is a flexible, easy to use and extend authentication and authorization
+* framework.
 *
 * @image html auth.png
 * @image latex auth.eps "UML authentication design overview" width=\textwidth 
@@ -13,5 +11,6 @@
 * @image html token.png
 * @image latex token.eps "UML tokens and permissions" width=10cm
 *
+* @example example.cpp
 * @author Roman Mohr
 */ 

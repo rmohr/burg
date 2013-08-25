@@ -24,4 +24,4 @@ SUBDIRS = . include src lib/gmock
 
 DIST_SUBDIRS = $(SUBDIRS)
 
-EXTRA_DIST = ChangeLog README.md aclocal.m4 COPYING
+EXTRA_DIST = aclocal.m4 doc img examples

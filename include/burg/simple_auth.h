@@ -33,6 +33,10 @@
 
 namespace burg {
     namespace simple {
+        /**
+         * @brief simplest possible token which just passes through data when
+         * calling encrypt() or decrypt()
+         */
         struct SimpleToken : public Token {
             explicit SimpleToken(const std::string& identifier);
 
@@ -53,6 +57,9 @@ namespace burg {
             std::string _identifier;
         };
 
+        /**
+         * @brief represents simple roles like 'admin' or 'user'
+         */
         struct Role : Permission {
             explicit Role(const std::string& id);
 
@@ -68,6 +75,9 @@ namespace burg {
 
         typedef boost::shared_ptr<SimpleAuthenticator> simple_auth_t;
 
+        /**
+         * @brief base for username/password based Authenticator%s
+         */
         struct SimpleAuthenticator : public Authenticator {
             explicit SimpleAuthenticator(user_store_t store);
 
@@ -87,6 +97,9 @@ namespace burg {
 
         typedef boost::shared_ptr<SimpleAuthorizer> simple_autz_t;
 
+        /**
+         * @brief base for username/role based Authorizers%s
+         */
         struct SimpleAuthorizer : public Authorizer {
             explicit SimpleAuthorizer(roles_store_t store);
 
@@ -97,7 +110,19 @@ namespace burg {
         };
 
 
+        /**
+         * @brief policy for username and password extraction from a string in
+         * the format 'username,password'
+         */
         struct CSVRegex {
+            /**
+             * @brief extracts usernames and passwords with the formant
+             * 'username,password'
+             *
+             * @param raw_token
+             *
+             * @return a username,password pair
+             */
             std::pair<std::string, std::string>
                 extract(const std::string& raw_token) {
                 std::vector<std::string> strs;
@@ -106,21 +131,49 @@ namespace burg {
             }
         };
 
+        /**
+         * @brief extracts username and password from provided data
+         * and tries to authenticate the user
+         *
+         * extracts username and password from provided data and tries
+         * to authenticate the user agains a underlying implementation of
+         * UserStore
+         *
+         * @tparam Regex a policy for extraction of username and password
+         * information from the provided data
+         */
         template <class Regex = CSVRegex>
         struct SimpleRegexAuthenticator :
             public Regex, public SimpleAuthenticator {
             using Regex::extract;
             using SimpleAuthenticator::_store;
 
-
+            /**
+             * @brief factory method to return a new Authenticator from this
+             * prototype
+             *
+             * the returned new Authenticator is ready to be used for a fresh
+             * authentication process and contains a reference to a UserStore
+             *
+             * @return a fresh SimpleRegexAuthenticator
+             */
             auth_t create() {
                 auth_t new_auth(new SimpleRegexAuthenticator(_store));
                 return new_auth;
             }
 
+            /**
+             * @brief creates a new SimpleRegexAuthenticator with a reference
+             * to a RolesStore
+             *
+             * @param store reference to a RolesStore
+             */
             explicit SimpleRegexAuthenticator(user_store_t store):
                 SimpleAuthenticator(store) {}
 
+            /**
+             *  @brief this Authenticator does not support negotiation
+             */
             std::string get_response() {
                 throw new std::runtime_error("this should never be called.");
             }
@@ -143,12 +196,36 @@ namespace burg {
             std::string _id;
         };
 
+        /**
+         * @brief a policy to extract a suitable identifier from another
+         * identifier
+         *
+         * sometimes an identifier is not in the right fashion for lookups in a
+         * RolesStore, e.g. a realm is appended before a username. Policies
+         * like this deal with this problem.
+         *
+         */
         struct PassRegex {
+            /**
+             * @brief in a simple username/password system the id is already
+             * suitable for a RolesStore, so just return the unmodified id
+             *
+             * @param id
+             *
+             * @return unmodified id
+             */
             std::string extract(const std::string& id) {
                 return id;
             }
         };
 
+        /**
+         * @brief retrieves the permissions of a user associated with a
+         * security Token from a underlying RolesStore.
+         *
+         * @tparam Regex a policy to map/extract the correct information an
+         * identifier returned by Token::id()
+         */
         template <class Regex = PassRegex>
         struct SimpleRegexAuthorizer : public Regex, public SimpleAuthorizer {
             using Regex::extract;
