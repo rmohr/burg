@@ -43,10 +43,14 @@ Tests
 The unit tests use gmock and gtest which are already included. To run the test
 do the following after building the main project:
 
+First you have to switch to the tests directory, otherwise all the unittest
+included with gmock itself would be started too!
+
 ```
 cd tests
 make check
 ```
+
 
 Usage
 -----

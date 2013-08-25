@@ -1,3 +1,22 @@
+/*
+ *  Copyright 2013, Roman Mohr <roman@fenkhuber.at>
+ *
+ *  This file is part of burg.
+ *
+ *  Burg is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Burg is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with burg.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <stdio.h>
 #include <burg/simple_db.h>
 #include <burg/simple_auth.h>
@@ -20,9 +39,8 @@ using ::burg::simple::CSVRegex;
 using ::burg::simple::Role;
 
 
-int main(int argc, char** argv){
-
-    if (argc != 5){
+int main(int argc, char** argv) {
+    if (argc != 5) {
         std::cerr << "USAGE: ./example USER PASSWD ROLE DB_PATH" << std::endl;
         return EXIT_FAILURE;
     }
@@ -33,7 +51,7 @@ int main(int argc, char** argv){
     std::string db_path(argv[4]);
 
     // create a role from the rolename
-    burg::permission_t role( new Role(rolename));
+    burg::permission_t role(new Role(rolename));
 
     // the library is design to get raw char[] messages, not already
     // preprocessed usernames and passwords, so 'simulate' a message from an
@@ -60,7 +78,8 @@ int main(int argc, char** argv){
     // completed. Therefore a factory method exists, to make spawning
     // authenticators more convenient. After an authentication has finished,
     // the Authenticator can be reused by another connection.
-    burg::simple::simple_auth_t factory(new SimpleRegexAuthenticator<CSVRegex>(user_store));
+    burg::simple::simple_auth_t factory(
+            new SimpleRegexAuthenticator<CSVRegex>(user_store));
     burg::auth_t auth = factory->create();
 
     // create a roles store wich stands between the roles database and the
@@ -77,10 +96,10 @@ int main(int argc, char** argv){
     // start the authentication process.
     burg::Authenticator::auth_s state = auth->authenticate(msg);
 
-    if (state == burg::Authenticator::AUTH_REJECT){
+    if (state == burg::Authenticator::AUTH_REJECT) {
         // authentication failed
         std::cout << "Sorry, no such user or password." << std::endl;
-    } else if ( state == burg::Authenticator::AUTH_SUCCESS){
+    } else if (state == burg::Authenticator::AUTH_SUCCESS) {
         // authenticaiton was successfull
         std::cout << "Successfully logged in '" << user << "'." << std::endl;
 

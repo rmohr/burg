@@ -109,7 +109,6 @@ namespace burg {
      *
      */
     struct UserStore {
-
         /**
          * @brief authenticat a user via a unique identifier and a password
          *

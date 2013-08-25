@@ -138,7 +138,6 @@ namespace burg {
      * implement your own Authenticator.
      */
     struct Authenticator {
-
         /**
          * @enum auth_s
          * @brief current state of the authentication process
