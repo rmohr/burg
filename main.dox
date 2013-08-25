@@ -1,16 +1,49 @@
-/**
+/*!
 * @mainpage Burg
 *
 * Burg is a flexible, easy to use and extend authentication and authorization
 * framework.
 *
+* The most important interfaces to start with are Authenticator, Authorizer,
+* Token and Permission. Everything in this framework is inherited from these
+* interfaces. When trying to implement new authentication mechanism it is
+* important to keep in mind, that implementations of Authenticator are
+* stateful. This makes it possible to handle complex authentication and
+* encryption negotiations.
+*
+* Further the library ships with a full implementation of a username/password
+* authentication system, including frontends for simple file based user and
+* roles databases. The best starting points to get an overview of the whole
+* implementation are SimpleRegexAuthorizer and SimpleRegexAuthenticator.The
+* implementation of the databases can be found in FileUserDB and FileRoleDB.
+* These implementations are threadsave, to make the databases usable in
+* multiprocess applications.
+*
+* SimpleRegexAuthenticator and SimpleRegexAuthorizer
+* can be customized by supplying them policies which specify how to pass
+* information to the UserStore and the RolesStore. An example policy for
+* SimpleRegexAuthenticator is Sha256Filter which creates a sha256sum in base64
+* encoding and passes the sum into the underlying FileUserDB.
+*
+* The following image shows an overview of the username/password
+* implementation. It is implemented using the bridge pattern:
 * @image html auth.png
-* @image latex auth.eps "UML authentication design overview" width=\textwidth 
+* @image latex auth.eps "UML authentication design overview" width=\textwidth
+* So if you want to implement another way of retrieving authentication
+* information, e.g. from an LDAP server, you just have to implement a new
+* variant of UserStore.
+*
+* The next picture gives an overview of the username/role implementation. Again
+* it is implemented via the bridge pattern:
 * @image html autz.png
-* @image latex autz.eps "UML authorization design overview" width=\textwidth 
+* @image latex autz.eps "UML authorization design overview" width=\textwidth
+* Create a new variant of RolesStore to support, LDAP, MySQL, etc.
+*
+* Last but not least an overview over the very simple security Token and
+* Permission implementation:
 * @image html token.png
 * @image latex token.eps "UML tokens and permissions" width=10cm
 *
 * @example example.cpp
 * @author Roman Mohr
-*/ 
+*/

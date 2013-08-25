@@ -30,14 +30,18 @@ AC_PROG_CXX
 # Checks for libraries.
 
 # Checks for header files.
+AC_CHECK_HEADERS([crypt.h], [], [AC_MSG_ERROR(
+                              [Please install libcryptopp])])
+
+PKG_CHECK_MODULES([LIBCONFIGXX], [libconfig++ >= 1.4],,
+                  AC_MSG_ERROR([libconfig++ 1.4 or newer not
+                                found.])
+                  )
 
 # Check for boost
 AX_BOOST_BASE([1.36.0], [], [AC_MSG_ERROR(
-                              [Please install boost >= 1.36.0 (regex,
-                               filesystem, system])])
-#AX_BOOST_REGEX
-#AX_BOOST_FILESYSTEM
-#AX_BOOST_SYSTEM
+                              [Please install boost >= 1.36.0 (thread)])])
+AX_BOOST_THREAD
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_HEADER_STDBOOL
