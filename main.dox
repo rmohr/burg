@@ -12,12 +12,12 @@
 * encryption negotiations.
 *
 * Further the library ships with a full implementation of a username/password
-* authentication system, including frontends for simple file based user and
-* roles databases. The best starting points to get an overview of the whole
-* implementation are SimpleRegexAuthorizer and SimpleRegexAuthenticator.The
-* implementation of the databases can be found in FileUserDB and FileRoleDB.
-* These implementations are threadsave, to make the databases usable in
-* multiprocess applications.
+* authentication system, including front- and backends for simple file based
+* user- and roles databases. The best starting points to get an overview of the
+* whole implementation are SimpleRegexAuthorizer and
+* SimpleRegexAuthenticator. The implementation of the databases can be found in
+* FileUserDB and FileRoleDB. These implementations are threadsave, to make the
+* databases usable in multithreaded applications.
 *
 * SimpleRegexAuthenticator and SimpleRegexAuthorizer
 * can be customized by supplying them policies which specify how to pass
@@ -26,15 +26,15 @@
 * encoding and passes the sum into the underlying FileUserDB.
 *
 * The following image shows an overview of the username/password
-* implementation. It is implemented using the bridge pattern:
+* authentication implementation. It is implemented using the bridge pattern:
 * @image html auth.png
 * @image latex auth.eps "UML authentication design overview" width=\textwidth
 * So if you want to implement another way of retrieving authentication
 * information, e.g. from an LDAP server, you just have to implement a new
 * variant of UserStore.
 *
-* The next picture gives an overview of the username/role implementation. Again
-* it is implemented via the bridge pattern:
+* The next picture gives an overview of the username/role authorization
+* implementation. Again it is implemented via the bridge pattern:
 * @image html autz.png
 * @image latex autz.eps "UML authorization design overview" width=\textwidth
 * Create a new variant of RolesStore to support, LDAP, MySQL, etc.

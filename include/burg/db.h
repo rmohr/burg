@@ -45,7 +45,7 @@ namespace burg {
          *
          * the intention of the method is to allow the reload of the database
          * when for example SIGHUP occures. As an application might be
-         * multithreaded, the whole derived class must be treadsave.
+         * multithreaded, the whole derived class must be threadsave.
          */
         virtual void reload() = 0;
 
@@ -85,7 +85,7 @@ namespace burg {
          *
          * the intention of the method is to allow the reload of the database
          * when for example SIGHUP occures. As an application might be
-         * multithreaded, the whole derived class must be treadsave.
+         * multithreaded, the whole derived class must be threadsave.
          */
         virtual void reload() = 0;
 
