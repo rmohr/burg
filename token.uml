@@ -1,4 +1,4 @@
-@startuml  img/uml.png
+@startuml
 
 Token <|-down- SimpleToken
 

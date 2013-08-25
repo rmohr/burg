@@ -1,0 +1,29 @@
+@startuml
+
+Authorizer <|-down- SimpleAuthorizer
+SimpleAuthorizer <|-down- "SimpleRegexAuthorizer<AutzRegex>"
+AutzRegex <|-up- "SimpleRegexAuthorizer<AutzRegex>"
+SimpleAuthorizer -right-> RolesStore
+RolesStore <|-down- SimpleRolesStore
+SimpleRolesStore -right-> RolesDB
+RolesDB <|-down- FileRolesDB
+
+interface Authorizer {
++{abstract} set_permissions(Token)
+}
+
+abstract class SimpleAuthorizer
+
+interface RolesStore {
++{abstract} get_roles(String): String[]
+}
+
+interface RolesDB {
++{abstract} lookup(String): String[]
+}
+
+class AutzRegex {
++extract(String): String
+}
+
+@enduml

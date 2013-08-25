@@ -18,10 +18,10 @@
 #
 
 
-ACLOCAL_AMFLAGS = -I m4
-	
-SUBDIRS = . include src lib/gmock
+noinst_PROGRAMS = example
 
-DIST_SUBDIRS = $(SUBDIRS)
-
-EXTRA_DIST = ChangeLog README.md aclocal.m4 COPYING
+LDADD = ../src/libburg.la $(INTLLIBS)
+example_LDFLAGS = -lconfig++ -lboost_thread -lcryptopp
+example_CPPFLAGS = -I$(top_srcdir)/include
+example_SOURCES = example.cpp
+EXTRA_DIST = db.cfg

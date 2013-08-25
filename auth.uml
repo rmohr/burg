@@ -1,11 +1,35 @@
-@startuml  img/auth.png
-[*] -down-> authenticate : AUTH_INIT
-authenticate -right-> callback : AUTH_CONTINUE
-callback --> authenticate : AUTH_CONTINUE
-authenticate --> reject : AUTH_REJECT 
-reject --> [*]
-authenticate --> generate_token : AUTH_SUCHESS
-generate_token --> [*]
+@startuml
+Authenticator <|-down- SimpleAuthenticator
+SimpleAuthenticator <|-- "SimpleRegexAuthenticator<AuthRegex>"
+SimpleAuthenticator -right-> UserStore
+AuthRegex <|-up- "SimpleRegexAuthenticator<AuthRegex>"
+UserStore <|-- SimpleUserStore
+SimpleUserStore -right-> UserDB
+UserDB <|-- FileUserDB
 
+interface Authenticator {
++{abstract} +authenticate(String): auth_s
++{abstract} +get_response(): String
++{abstract} +get_token(): Token
+}
+
+abstract class SimpleAuthenticator {
++{abstract} create(): Authenticator
+}
+
+interface UserStore {
++{abstract} authenticate(String, String): bool
+}
+
+interface UserDB {
++{abstract} lookup(String, String): bool
+}
+
+class AuthRegex {
++extract(String): String, String
+}
+
+class "SimpleRegexAuthenticator<AuthRegex>" {
+}
 
 @enduml

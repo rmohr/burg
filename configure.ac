@@ -45,7 +45,8 @@ AC_TYPE_SIZE_T
 
 # Checks for library functions.
 
-AC_CONFIG_FILES([include/Makefile Makefile tests/Makefile src/Makefile])
+AC_CONFIG_FILES([include/Makefile Makefile tests/Makefile src/Makefile \
+                 examples/Makefile])
 AC_CONFIG_SUBDIRS([lib/gmock])
 
 AC_LIBTOOL_DLOPEN

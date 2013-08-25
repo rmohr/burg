@@ -1,0 +1,17 @@
+/**
+* @mainpage Example program
+*
+* Description of the project
+* You can force new lines in the HTML documentation with <br>
+*
+* With the <img-keyword you can add own pictures
+*
+* @image html auth.png
+* @image latex auth.eps "UML authentication design overview" width=\textwidth 
+* @image html autz.png
+* @image latex autz.eps "UML authorization design overview" width=\textwidth 
+* @image html token.png
+* @image latex token.eps "UML tokens and permissions" width=10cm
+*
+* @author Roman Mohr
+*/ 
