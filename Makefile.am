@@ -20,8 +20,8 @@
 
 ACLOCAL_AMFLAGS = -I m4
 	
-SUBDIRS = . include src lib/gmock
+SUBDIRS = . include src lib/gmock tests examples
 
 DIST_SUBDIRS = $(SUBDIRS)
 
-EXTRA_DIST = README.md COPYING aclocal.m4 doc img examples/Makefile.am examples/example.cpp
+EXTRA_DIST = README.md COPYING aclocal.m4 doc/html doc/latex/refman.pdf img lib/gmock/include

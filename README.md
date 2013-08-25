@@ -54,7 +54,6 @@ The main headers are **burg/auth.h** and **burg/db.h**.
 A simple username/password implementation can be used via
 **burg/simple_auth.h** and **burg/simple_db.h**.
 
-
 Examples
 --------
 A simple example can be found in **examples/example.cpp**.
@@ -62,6 +61,5 @@ To run it do the following after building the main project:
 
 ```
 cd examples
-make
 ./example roman hallo admin ../tests/db.cfg
 ```

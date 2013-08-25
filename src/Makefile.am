@@ -29,4 +29,4 @@ libburg_la_LDFLAGS = -version-info 1:0:0
 
 libburg_la_CPPFLAGS = -I$(top_srcdir)/include/burg
 
-libburg_la_SOURCES = simple_auth.cpp simple_db.cpp util.cpp
+libburg_la_SOURCES = simple_auth.cpp simple_db.cpp util.cpp util.h
