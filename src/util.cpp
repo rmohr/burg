@@ -38,7 +38,7 @@ namespace burg {
             }
             catch(const ParseException &pex) {
                 std::ostringstream sstream;
-                sstream << "Parse error at "<< pex.getFile() <<":" <<
+                sstream << "Parse error at "<< file_path <<":" <<
                     pex.getLine() << " - " << pex.getError();
                 throw ConfigException(sstream.str());
             }
