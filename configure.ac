@@ -44,7 +44,6 @@ AX_BOOST_BASE([1.36.0], [], [AC_MSG_ERROR(
 AX_BOOST_THREAD
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_HEADER_STDBOOL
 AC_TYPE_SIZE_T
 
 # Checks for library functions.
