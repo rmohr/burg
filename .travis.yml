@@ -1,4 +1,4 @@
 language: cpp
 compiler: gcc
 before_install: sudo apt-get install libcrypto++-dev libconfig++-dev libboost-dev libboost-thread-dev
-script: ./configure && make && make install && cd tests; make check
+script: mkdir -p m4 && autoreconf -fi && ./configure && make && make install && cd tests; make check

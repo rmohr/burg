@@ -32,9 +32,8 @@ Installation
 ------------
 
 ```
-./configure
-make
-make install
+mkdir -p m4 && autoreconf -fi 
+./configure && make && make install
 ```
 
 Tests
