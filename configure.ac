@@ -33,9 +33,11 @@ AC_PROG_CXX
 AC_CHECK_HEADERS([crypt.h], [], [AC_MSG_ERROR(
                               [Please install libcryptopp])])
 
-PKG_CHECK_MODULES([CRYPTOPP], [cryptopp >= 5.6.0],,
-                  AC_MSG_ERROR([libcryptopp not found])
-                  )
+PKG_CHECK_MODULES([CRYPTOPP], [libcrypto++ >= 5.6.0],,
+                  [PKG_CHECK_MODULES([CRYPTOPP], [cryptopp >= 5.6.0],,
+                                    [AC_MSG_ERROR([libcryptopp not found])
+                                   ])
+                  ])
 
 PKG_CHECK_MODULES([LIBCONFIGXX], [libconfig++ >= 1.3],,
                   AC_MSG_ERROR([libconfig++ 1.3 or newer not found])
