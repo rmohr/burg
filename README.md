@@ -15,18 +15,7 @@ Dependencies
 Documentation
 -------------
 
-View the doxygen documentation as html:
-
-```
-firefox doc/html/index.html
-```
-
-
-View the doxygen documenatation as pdf:
-
-```
-evince doc/latex/refman.pdf
-```
+The documentation is hosted on [rmohr.github.io/burg](https://rmohr.github.io/burg/).
 
 Installation
 ------------
