@@ -23,11 +23,6 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/thread/shared_mutex.hpp>
-#include <cryptopp/cryptlib.h>
-#include <cryptopp/filters.h>
-#include <cryptopp/sha.h>
-#include <cryptopp/base64.h>
-#include <cryptopp/base32.h>
 
 #include <map>
 #include <utility>
@@ -35,6 +30,7 @@
 
 #include "./auth.h"
 #include "./db.h"
+#include "./filters.h"
 namespace burg {
     namespace simple {
 
@@ -45,7 +41,7 @@ namespace burg {
          * @code
          * roles =
          * (
-         *     ("username", ("role1", "role2") ),
+         *     ("user123", ("role1", "role2") ),
          *     ("fritz", ("admin", "user") )
          * );
          * @endcode
@@ -75,7 +71,7 @@ namespace burg {
          * @code
          * users =
          * (
-         *     ("username", "password")
+         *     ("user123", "password123")
          *     ("fritz", "03UdM/nNUEnErytGJzVFfk07rxMLy7h/OJ40n7rrILk=")
          * );
          * @endcode
@@ -99,58 +95,13 @@ namespace burg {
         };
 
         /**
-         * @brief a policy to transform a password from one from into another
-         *
-         * in this case the plane filter does nothing but return the unmodified
-         * password.
-         */
-        struct PlainFilter {
-            /**
-             * @brief passes the given password through
-             *
-             * @param str password to transform
-             *
-             * @return unmodified password
-             */
-            std::string encrypt(const std::string& str) {
-                return str;
-            }
-        };
-
-        /**
-         * @brief transform a given password into sha256sum with base64
-         * encoding
-         */
-        struct Sha256Filter {
-            /**
-             * @brief transforms a given password into sha256sum with base64
-             * encoding
-             *
-             * @param str password to transform
-             *
-             * @return sha256sum in base64 encoding of password
-             *
-             */
-            std::string encrypt(const std::string& str) {
-                std::string digest;
-                CryptoPP::SHA256 hash;
-
-                CryptoPP::StringSource source(str, true,
-                        new CryptoPP::HashFilter(hash,
-                            new CryptoPP::Base64Encoder(
-                                new CryptoPP::StringSink(digest), false)));
-                return digest;
-            }
-        };
-
-        /**
          * @brief takes usernames/passwords and tries to authenticate users
          * agains a underlying UserDB
          *
          * @tparam Filter filter to transform a given password in an
          * appropriate form for the underlying UserDB
          */
-        template < class Filter = PlainFilter >
+        template < class Filter = burg::filters::PlainFilter >
             struct SimpleUserStore : public Filter, public UserStore {
                 using Filter::encrypt;
 

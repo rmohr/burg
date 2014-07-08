@@ -29,7 +29,7 @@ using ::burg::simple::FileRolesDB;
 
 using ::burg::simple::SimpleUserStore;
 using ::burg::simple::SimpleRolesStore;
-using ::burg::simple::Sha256Filter;
+using ::burg::filters::Sha256Filter;
 
 using ::burg::simple::SimpleRegexAuthorizer;
 using ::burg::simple::SimpleRegexAuthenticator;
