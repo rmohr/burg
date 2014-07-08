@@ -21,6 +21,7 @@
 noinst_PROGRAMS = example
 
 LDADD = ../src/libburg.la $(INTLLIBS)
-example_LDFLAGS = -lconfig++ -lboost_thread -lcryptopp
+#example_LDFLAGS = -lconfig++ -lboost_thread -lcryptopp -lpam
+
 example_CPPFLAGS = -I$(top_srcdir)/include
 example_SOURCES = example.cpp

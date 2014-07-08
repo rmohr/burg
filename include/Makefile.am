@@ -19,4 +19,7 @@
 
 
 nobase_include_HEADERS = burg/simple_db.h burg/simple_auth.h burg/db.h burg/auth.h
+if HAVE_PAM
+nobase_include_HEADERS += burg/pam_db.h
+endif
 

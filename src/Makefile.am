@@ -25,8 +25,13 @@
 
 lib_LTLIBRARIES = libburg.la
 
-libburg_la_LDFLAGS = -version-info 1:0:0 $(LIBCONFIGXX_LIBS) $(CRYPTOPP_LIBS) -lboost_thread-mt 
+libburg_la_LDFLAGS = -version-info 1:0:0 $(LIBCONFIGXX_LIBS) $(CRYPTOPP_LIBS) -lboost_thread-mt
 
 libburg_la_CPPFLAGS = -I$(top_srcdir)/include/burg
 
 libburg_la_SOURCES = simple_auth.cpp simple_db.cpp util.cpp util.h
+
+if HAVE_PAM
+libburg_la_LDFLAGS += -lpam
+libburg_la_SOURCES += pam_db.cpp
+endif

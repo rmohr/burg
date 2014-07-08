@@ -17,10 +17,12 @@
  *  along with burg.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <pwd.h>
 
 #include <boost/foreach.hpp>
 #include <burg/simple_db.h>
 #include <burg/simple_auth.h>
+#include <burg/pam_db.h>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -65,7 +67,7 @@ TEST(basicTests, permissions) {
     ASSERT_FALSE(permission1->satisfies(permission));
 }
 
-TEST(basicTests, databases) {
+TEST(basicTests, libconfig_db) {
     burg::user_db_t user_db = burg::user_db_t(new FileUserDB("./db.cfg"));
     burg::roles_db_t roles_db = burg::roles_db_t(new FileRolesDB("./db.cfg"));
 
@@ -81,6 +83,15 @@ TEST(basicTests, databases) {
     expected_roles.push_back("admin");
     expected_roles.push_back("user");
     EXPECT_THAT(expected_roles, ::testing::ContainerEq(*roles));
+}
+
+TEST(basicTests, pam_db) {
+    if (getpwnam("test") == NULL || getuid() != 0) return;
+    burg::user_db_t pam_db = burg::user_db_t(new burg::pam::PamUserDB("passwd"));
+    ASSERT_TRUE(pam_db->lookup("test", "test"));
+    ASSERT_FALSE(pam_db->lookup("test1", "test"));
+    ASSERT_FALSE(pam_db->lookup("test", "test1"));
+    ASSERT_FALSE(pam_db->lookup("test1", "test1"));
 }
 
 
