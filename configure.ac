@@ -55,7 +55,7 @@ AX_BOOST_THREAD
 AC_TYPE_SIZE_T
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_HEADER_STDBOOL
+# AC_CHECK_HEADER_STDBOOL
 
 # Checks for library functions.
 AC_CHECK_FUNCS([strdup])
