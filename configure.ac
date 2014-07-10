@@ -30,13 +30,21 @@ AC_PROG_CXX
 # Checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([crypt.h], [], [AC_MSG_ERROR(
-                              [Please install libcryptopp])])
+AC_CHECK_HEADERS([crypt.h])
+AC_CHECK_HEADERS([security/pam_appl.h])
 
-PKG_CHECK_MODULES([LIBCONFIGXX], [libconfig++ >= 1.4],,
-                  AC_MSG_ERROR([libconfig++ 1.4 or newer not
-                                found.])
-                  )
+PKG_CHECK_MODULES([LIBCONFIGXX], [libconfig++ >= 1.3],[have_libconfig=true],
+                  [have_libconfig=false])
+AM_CONDITIONAL([HAVE_LIBCONFIG], [test x$have_libconfig = xtrue])
+
+PKG_CHECK_MODULES([CRYPTOPP], [libcrypto++ >= 5.6.0],[have_cryptopp=true],
+                  [PKG_CHECK_MODULES([CRYPTOPP], [cryptopp >= 5.6.0],
+                                     [have_cryptopp=true],
+                                     [have_cryptopp=false]) ])
+AM_CONDITIONAL([HAVE_CRYPTO], [test x$have_cryptopp = xtrue])
+
+AC_SEARCH_LIBS(pam_start, pam, [have_pam=true], [have_pam=false])
+AM_CONDITIONAL([HAVE_PAM], [test x$have_pam = xtrue])
 
 # Check for boost
 AX_BOOST_BASE([1.36.0], [], [AC_MSG_ERROR(
@@ -44,14 +52,17 @@ AX_BOOST_BASE([1.36.0], [], [AC_MSG_ERROR(
 AX_BOOST_THREAD
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_HEADER_STDBOOL
 AC_TYPE_SIZE_T
 
-# Checks for library functions.
+# Checks for typedefs, structures, and compiler characteristics.
+# AC_CHECK_HEADER_STDBOOL
 
+# Checks for library functions.
+AC_CHECK_FUNCS([strdup])
+
+AC_CONFIG_SUBDIRS([tests/lib/gmock])
 AC_CONFIG_FILES([include/Makefile Makefile tests/Makefile src/Makefile \
                  examples/Makefile])
-AC_CONFIG_SUBDIRS([lib/gmock])
 
 AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL

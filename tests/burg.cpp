@@ -1,5 +1,5 @@
 /*
- *  Copyright 2013, Roman Mohr <roman@fenkhuber.at>
+ *  Copyright 2013, Roman Mohr <user123@fenkhuber.at>
  *
  *  This file is part of burg.
  *
@@ -17,10 +17,12 @@
  *  along with burg.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <pwd.h>
 
 #include <boost/foreach.hpp>
-#include <burg/simple_db.h>
-#include <burg/simple_auth.h>
+
+#include <burg/auth/simple.h>
+#include <burg/store/simple.h>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -33,17 +35,15 @@ using ::testing::Return;
 using ::testing::_;
 using ::testing::InSequence;
 
-using ::burg::simple::FileUserDB;
-using ::burg::simple::FileRolesDB;
-using ::burg::simple::SimpleUserStore;
-using ::burg::simple::Sha256Filter;
-using ::burg::simple::PlainFilter;
-using ::burg::simple::SimpleRolesStore;
-using ::burg::simple::SimpleRegexAuthenticator;
-using ::burg::simple::SimpleRegexAuthorizer;
-using ::burg::simple::CSVRegex;
-using ::burg::simple::PassRegex;
-using ::burg::simple::simple_auth_t;
+using ::burg::filters::PlainFilter;
+using ::burg::store::SimpleUserStore;
+using ::burg::store::SimpleRolesStore;
+using ::burg::auth::SimpleRegexAuthenticator;
+using ::burg::auth::SimpleRegexAuthorizer;
+using ::burg::auth::CSVRegex;
+using ::burg::auth::PassRegex;
+using ::burg::auth::simple_auth_t;
+using ::burg::auth::Role;
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleMock(&argc, argv);
@@ -51,72 +51,52 @@ int main(int argc, char** argv) {
 }
 
 TEST(basicTests, token) {
-    burg::token_t token = burg::token_t(new burg::simple::SimpleToken("roman"));
-    ASSERT_EQ(token->id(), "roman");
+    burg::token_t token = burg::token_t(new burg::auth::SimpleToken("user123"));
+    ASSERT_EQ(token->id(), "user123");
 }
 
 TEST(basicTests, permissions) {
     burg::permission_t permission = burg::permission_t(
-            new burg::simple::Role("admin"));
+            new Role("admin"));
     burg::permission_t permission1 = burg::permission_t(
-            new burg::simple::Role("user"));
+            new Role("user"));
     ASSERT_TRUE(permission->satisfies(permission));
     ASSERT_FALSE(permission->satisfies(permission1));
     ASSERT_FALSE(permission1->satisfies(permission));
 }
 
-TEST(basicTests, databases) {
-    burg::user_db_t user_db = burg::user_db_t(new FileUserDB("./db.cfg"));
-    burg::roles_db_t roles_db = burg::roles_db_t(new FileRolesDB("./db.cfg"));
+TEST(filters, plain) {
+    PlainFilter filter;
 
     std::string encrypted = "03UdM/nNUEnErytGJzVFfk07rxMLy7h/OJ40n7rrILk=";
     std::string plain = "hallo";
-
-    ASSERT_FALSE(user_db->lookup("roman", plain));
-
-    ASSERT_TRUE(user_db->lookup("roman", encrypted));
-
-    burg::roles_vec_t roles = roles_db->lookup("roman");
-    std::vector<std::string> expected_roles;
-    expected_roles.push_back("admin");
-    expected_roles.push_back("user");
-    EXPECT_THAT(expected_roles, ::testing::ContainerEq(*roles));
+    ASSERT_EQ(filter.encrypt(plain), plain);
+    ASSERT_EQ(filter.encrypt(encrypted), encrypted);
 }
 
 
-TEST(mockTests, user_stores) {
-    MockUserDB* sha_user_db_ptr = new MockUserDB();
+TEST(stores, user) {
     MockUserDB* plain_user_db_ptr = new MockUserDB();
-    burg::user_db_t sha_user_db(sha_user_db_ptr);
     burg::user_db_t plain_user_db(plain_user_db_ptr);
-    burg::user_store_t sha_user_store = burg::user_store_t(
-            new SimpleUserStore<Sha256Filter>(sha_user_db));
     burg::user_store_t plain_user_store = burg::user_store_t(
             new SimpleUserStore<PlainFilter>(plain_user_db));
 
     std::string encrypted = "03UdM/nNUEnErytGJzVFfk07rxMLy7h/OJ40n7rrILk=";
     std::string plain = "hallo";
 
-    EXPECT_CALL(*sha_user_db_ptr, lookup("roman", _)).WillOnce(Return(false));
-    EXPECT_CALL(*plain_user_db_ptr, lookup("roman", _)).WillOnce(Return(false));
-    EXPECT_CALL(*sha_user_db_ptr, lookup("roman", encrypted))
-        .WillOnce(Return(true));
-    EXPECT_CALL(*plain_user_db_ptr, lookup("roman", plain))
+    EXPECT_CALL(*plain_user_db_ptr, lookup("user123", _)).WillOnce(Return(false));
+    EXPECT_CALL(*plain_user_db_ptr, lookup("user123", plain))
         .WillOnce(Return(true));
 
-    EXPECT_TRUE(sha_user_store->authenticate("roman", plain));
-    EXPECT_FALSE(sha_user_store->authenticate("roman", encrypted));
-
-    EXPECT_TRUE(plain_user_store->authenticate("roman", plain));
-    EXPECT_FALSE(plain_user_store->authenticate("roman", encrypted));
+    EXPECT_TRUE(plain_user_store->authenticate("user123", plain));
+    EXPECT_FALSE(plain_user_store->authenticate("user123", encrypted));
 }
 
-TEST(mockTests, roles_stores) {
+TEST(stores, roles) {
     MockRolesDB* roles_db_ptr = new MockRolesDB();
     burg::roles_db_t roles_db(roles_db_ptr);
     burg::roles_store_t roles_store = burg::roles_store_t(
             new SimpleRolesStore(roles_db));
-
 
     burg::roles_vec_t empty(new burg::roles_t_vec());
     burg::roles_vec_t full(new burg::roles_t_vec());
@@ -124,21 +104,31 @@ TEST(mockTests, roles_stores) {
     full->push_back("user");
 
     EXPECT_CALL(*roles_db_ptr, lookup(_)).WillOnce(Return(empty));
-    EXPECT_CALL(*roles_db_ptr, lookup("roman")).WillOnce(Return(full));
+    EXPECT_CALL(*roles_db_ptr, lookup("user123")).WillOnce(Return(full));
 
     EXPECT_THAT(*empty,
             ::testing::ContainerEq(*(roles_store->get_roles("anonymous"))));
     EXPECT_THAT(*full,
-            ::testing::ContainerEq(*(roles_store->get_roles("roman"))));
+            ::testing::ContainerEq(*(roles_store->get_roles("user123"))));
 }
 
+TEST(integration, simpleTest) {
+    MockRolesDB* roles_db_ptr = new MockRolesDB();
+    burg::roles_db_t roles_db(roles_db_ptr);
+    MockUserDB* user_db_ptr = new MockUserDB();
+    burg::user_db_t user_db(user_db_ptr);
 
-TEST(fullChainTests, simpleTest) {
-    burg::user_db_t user_db = burg::user_db_t(new FileUserDB("./db.cfg"));
-    burg::roles_db_t roles_db = burg::roles_db_t(new FileRolesDB("./db.cfg"));
+    EXPECT_CALL(*user_db_ptr, lookup(_, _)).WillRepeatedly(Return(false));
+    EXPECT_CALL(*user_db_ptr, lookup("user123", "hallo"))
+        .WillOnce(Return(true));
+
+    burg::roles_vec_t admin_perm_vec(new burg::roles_t_vec());
+    admin_perm_vec->push_back("admin");
+
+    EXPECT_CALL(*roles_db_ptr, lookup("user123")).WillOnce(Return(admin_perm_vec));
 
     burg::user_store_t store = burg::user_store_t(
-            new SimpleUserStore<Sha256Filter>(user_db));
+            new SimpleUserStore<PlainFilter>(user_db));
     burg::roles_store_t roles_store = burg::roles_store_t(
             new SimpleRolesStore(roles_db));
 
@@ -148,18 +138,18 @@ TEST(fullChainTests, simpleTest) {
     ASSERT_EQ(burg::Authenticator::AUTH_REJECT,
             auth->authenticate("roma,hallo"));
     ASSERT_EQ(burg::Authenticator::AUTH_REJECT,
-            auth->authenticate("roman,hllo"));
+            auth->authenticate("user123,hllo"));
     ASSERT_EQ(burg::Authenticator::AUTH_SUCCESS,
-            auth->authenticate("roman,hallo"));
+            auth->authenticate("user123,hallo"));
     burg::token_t token = auth->get_token();
 
     burg::autz_t autz = burg::autz_t(
             new SimpleRegexAuthorizer<PassRegex>(roles_store));
     autz->set_permissions(token);
     burg::permission_t perm_yes = burg::permission_t(
-            new burg::simple::Role("admin"));
+            new Role("admin"));
     burg::permission_t perm_no = burg::permission_t(
-            new burg::simple::Role("blub"));
+            new Role("blub"));
 
     ASSERT_TRUE(token->has_permission(perm_yes));
     ASSERT_FALSE(token->has_permission(perm_no));

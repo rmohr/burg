@@ -18,14 +18,15 @@
  */
 
 
-#include <simple_auth.h>
 #include <boost/foreach.hpp>
 
 #include <string>
 
+#include "./auth/simple.h"
+
 namespace burg {
 
-    namespace simple {
+    namespace auth {
 
         SimpleToken::SimpleToken(const std::string& identifier):
             _identifier(identifier) {}
@@ -80,5 +81,5 @@ namespace burg {
 
         SimpleAuthorizer::SimpleAuthorizer(roles_store_t store):
             _store(store) {}
-    }  // namespace simple
+    }  // namespace auth
 }  // namespace burg

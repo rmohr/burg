@@ -18,25 +18,27 @@
  */
 
 #include <stdio.h>
-#include <burg/simple_db.h>
-#include <burg/simple_auth.h>
+#include <burg/db/libconfig.h>
+#include <burg/auth/simple.h>
+#include <burg/store/simple.h>
+#include <burg/filters/crypto.h>
 #include <cstdlib>
 #include <string>
 #include <iostream>
 
-using ::burg::simple::FileUserDB;
-using ::burg::simple::FileRolesDB;
+using ::burg::db::FileUserDB;
+using ::burg::db::FileRolesDB;
 
-using ::burg::simple::SimpleUserStore;
-using ::burg::simple::SimpleRolesStore;
-using ::burg::simple::Sha256Filter;
+using ::burg::store::SimpleUserStore;
+using ::burg::store::SimpleRolesStore;
+using ::burg::filters::Sha256Filter;
 
-using ::burg::simple::SimpleRegexAuthorizer;
-using ::burg::simple::SimpleRegexAuthenticator;
-using ::burg::simple::PassRegex;
-using ::burg::simple::CSVRegex;
+using ::burg::auth::SimpleRegexAuthorizer;
+using ::burg::auth::SimpleRegexAuthenticator;
+using ::burg::auth::PassRegex;
+using ::burg::auth::CSVRegex;
 
-using ::burg::simple::Role;
+using ::burg::auth::Role;
 
 
 int main(int argc, char** argv) {
@@ -78,7 +80,7 @@ int main(int argc, char** argv) {
     // completed. Therefore a factory method exists, to make spawning
     // authenticators more convenient. After an authentication has finished,
     // the Authenticator can be reused by another connection.
-    burg::simple::simple_auth_t factory(
+    burg::auth::simple_auth_t factory(
             new SimpleRegexAuthenticator<CSVRegex>(user_store));
     burg::auth_t auth = factory->create();
 

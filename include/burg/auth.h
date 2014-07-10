@@ -143,7 +143,7 @@ namespace burg {
          * @brief current state of the authentication process
          */
         enum auth_s {
-        AUTH_CONTINUE = 255, /**< information from the client is needed*/
+            AUTH_CONTINUE = 255, /**< information from the client is needed*/
             AUTH_SUCCESS = 254, /**< authentication was successful*/
             AUTH_REJECT = 253 /**< authentication failed*/
         };

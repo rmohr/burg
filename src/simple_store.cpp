@@ -18,30 +18,22 @@
  */
 
 
-#include <sstream>
+#include <stdexcept>
 #include <string>
+
+#include "./store/simple.h"
 #include "./util.h"
 
 namespace burg {
-    namespace util {
-        using ::libconfig::Config;
-        using ::libconfig::FileIOException;
-        using ::libconfig::ParseException;
 
-        void read_cfg(Config& cfg, std::string file_path) {
-            try {
-                cfg.readFile(file_path.c_str());
-            }
-            catch(const FileIOException &fioex) {
-                throw ConfigException("I/O error while reading file '"
-                        + file_path);
-            }
-            catch(ParseException &pex) {
-                std::ostringstream sstream;
-                sstream << "Parse error at "<< file_path <<":" <<
-                    pex.getLine() << " - " << pex.getError();
-                throw ConfigException(sstream.str());
-            }
+    namespace store {
+
+        SimpleRolesStore::SimpleRolesStore(roles_db_t db):_db(db) {}
+
+        roles_vec_t SimpleRolesStore::get_roles(const std::string& user) {
+            return _db->lookup(user);
         }
-    }  // namespace util
+
+    }  // namespace store
+
 }  // namespace burg

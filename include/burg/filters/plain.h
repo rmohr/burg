@@ -17,31 +17,34 @@
  *  along with burg.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef INCLUDE_BURG_PLAIN_FILTERS_H_
+#define INCLUDE_BURG_PLAIN_FILTERS_H_
 
-#include <sstream>
 #include <string>
-#include "./util.h"
 
+#include "../auth.h"
+#include "../db.h"
 namespace burg {
-    namespace util {
-        using ::libconfig::Config;
-        using ::libconfig::FileIOException;
-        using ::libconfig::ParseException;
+    namespace filters {
 
-        void read_cfg(Config& cfg, std::string file_path) {
-            try {
-                cfg.readFile(file_path.c_str());
+        /**
+         * @brief a policy to transform a password from one from into another
+         *
+         * in this case the plane filters does nothing but return the unmodified
+         * password.
+         */
+        struct PlainFilter {
+            /**
+             * @brief passes the given password through
+             *
+             * @param str password to transform
+             *
+             * @return unmodified password
+             */
+            std::string encrypt(const std::string& str) {
+                return str;
             }
-            catch(const FileIOException &fioex) {
-                throw ConfigException("I/O error while reading file '"
-                        + file_path);
-            }
-            catch(ParseException &pex) {
-                std::ostringstream sstream;
-                sstream << "Parse error at "<< file_path <<":" <<
-                    pex.getLine() << " - " << pex.getError();
-                throw ConfigException(sstream.str());
-            }
-        }
-    }  // namespace util
+        };
+    }  // namespace filters
 }  // namespace burg
+#endif  // INCLUDE_BURG_PLAIN_FILTERS_H_

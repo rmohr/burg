@@ -20,7 +20,7 @@
 
 ACLOCAL_AMFLAGS = -I m4
 	
-SUBDIRS = . include src lib/gmock tests examples
+SUBDIRS = . include src
 
 DIST_SUBDIRS = $(SUBDIRS)
 
