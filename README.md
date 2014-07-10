@@ -16,15 +16,13 @@ Dependencies
 * libcryptopp (optional)
 * pam (optional)
 
-Debian/Ubuntu
-=============
+### Debian/Ubuntu
 
 ```
 sudo apt-get install libconfig++-dev libboost-dev libboost-thread-dev autoconf-archive libpam0g-dev
 ```
 
-Fedora
-======
+### Fedora
 
 ```
 yum install pam-devel libconfig-devel boost-devel boost-thread cryptopp-devel
@@ -56,8 +54,8 @@ make -C tests && make -C tests check-TESTS
 Usage
 -----
 The main headers are [burg/auth.h](include/burg/auth.h) and [burg/db.h](include/burg/db.h).
-A simple username/password implementation can be used via
-[burg/simple_auth.h](include/burg/simple_auth.h) and [burg/simple_db.h](include/burg/simple_db.h).
+A simple username/password implementation can be found in
+[burg/auth/simple_auth.h](include/burg/auth/simple.h) and [burg/store/simple.h](include/burg/store/simple.h).
 
 Examples
 --------
