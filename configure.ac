@@ -60,9 +60,9 @@ AC_TYPE_SIZE_T
 # Checks for library functions.
 AC_CHECK_FUNCS([strdup])
 
+AC_CONFIG_SUBDIRS([tests/lib/gmock])
 AC_CONFIG_FILES([include/Makefile Makefile tests/Makefile src/Makefile \
                  examples/Makefile])
-AC_CONFIG_SUBDIRS([lib/gmock])
 
 AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL

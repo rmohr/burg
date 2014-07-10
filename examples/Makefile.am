@@ -17,6 +17,9 @@
 # along with burg.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+SUBDIRS = ../ .
+
+DIST_SUBDIRS = $(SUBDIRS)
 
 if HAVE_LIBCONFIG
 if HAVE_CRYPTO

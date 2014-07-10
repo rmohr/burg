@@ -17,12 +17,15 @@
 # along with burg.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+SUBDIRS = ../ lib/gmock .
+
+DIST_SUBDIRS = $(SUBDIRS)
 
 TESTS = burg
 noinst_PROGRAMS = burg
 
-LIBS = ../src/libburg.la ../lib/gmock/lib/libgmock.la ../lib/gmock/gtest/lib/libgtest.la  $(INTLLIBS) 
-CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/lib/gmock/include/ -I$(top_srcdir)/lib/gmock/gtest/include/
+LIBS = ../src/libburg.la ./lib/gmock/lib/libgmock.la ./lib/gmock/gtest/lib/libgtest.la  $(INTLLIBS) 
+CPPFLAGS = -I$(top_srcdir)/include -I./lib/gmock/include/ -I./lib/gmock/gtest/include/
 
 burg_SOURCES = burg.cpp mock.h
 

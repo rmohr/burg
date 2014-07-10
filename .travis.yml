@@ -1,4 +1,8 @@
 language: cpp
 compiler: gcc
 before_install: sudo apt-get install libconfig++-dev libboost-dev libboost-thread-dev autoconf-archive
-script: mkdir -p m4 && autoreconf -fi && ./configure && make && make install && cd tests && make check
+before_script:
+  - mkdir -p m4
+  - autoreconf -fi
+  - ./configure
+script: make -C tests && make -C tests check-TESTS && sudo make install
