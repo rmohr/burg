@@ -6,11 +6,26 @@ framework.
 Dependencies
 ------------
 
-* gmock/gtest (included in [lib](lib))
-* libcryptopp
 * boost
 * boost_threads
-* libconfig++
+* gmock/gtest (included in [lib](lib))
+* libconfig++ (optional)
+* libcryptopp (optional)
+* pam (optional)
+
+Debian/Ubuntu
+=============
+
+```
+sudo apt-get install libconfig++-dev libboost-dev libboost-thread-dev autoconf-archive libpam0g-dev
+```
+
+Fedora
+======
+
+```
+yum install pam-devel libconfig-devel boost-devel boost-thread cryptopp-devel
+```
 
 Documentation
 -------------
@@ -28,15 +43,11 @@ mkdir -p m4 && autoreconf -fi
 Tests
 -----
 
-The unit tests use gmock and gtest which are already included. To run the test
-do the following after building the main project:
-
-First you have to switch to the tests directory, otherwise all the unittest
-included with gmock itself would be started too!
+The unit tests use gmock and gtest which are already included. To run the tests,
+execute
 
 ```
-cd tests
-make check
+make -C tests && make -C tests check-TESTS
 ```
 
 Usage
@@ -48,9 +59,9 @@ A simple username/password implementation can be used via
 Examples
 --------
 A simple example can be found in [examples/example.cpp](examples/example.cpp).
-To run it do the following after building the main project:
+It requires *libconfig++* and *libcryptopp*. To run it, execute
 
 ```
-cd examples
-./example roman hallo admin ../tests/db.cfg
+make -C examples
+./examples/example roman hallo admin ./tests/db.cfg
 ```
