@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['create',['create',['../structburg_1_1simple_1_1SimpleRegexAuthenticator.html#a7935ef475040d8ed155fb8af6881bce3',1,'burg::simple::SimpleRegexAuthenticator']]],
-  ['csvregex',['CSVRegex',['../structburg_1_1simple_1_1CSVRegex.html',1,'burg::simple']]]
+  ['create',['create',['../structburg_1_1auth_1_1SimpleRegexAuthenticator.html#ad07f8b8227392643a4aedb8385ec992d',1,'burg::auth::SimpleRegexAuthenticator']]],
+  ['csvregex',['CSVRegex',['../structburg_1_1auth_1_1CSVRegex.html',1,'burg::auth']]]
 ];

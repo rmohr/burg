@@ -101,25 +101,27 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line"><span class="comment"> */</span></div>
 <div class="line"></div>
 <div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;burg/simple_db.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &lt;burg/simple_auth.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;burg/db/libconfig.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;burg/auth/simple.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;burg/store/simple.h&gt;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;burg/filters/crypto.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;cstdlib&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div>
 <div class="line"></div>
-<div class="line">using ::burg::simple::FileUserDB;</div>
-<div class="line">using ::burg::simple::FileRolesDB;</div>
+<div class="line">using ::burg::db::FileUserDB;</div>
+<div class="line">using ::burg::db::FileRolesDB;</div>
 <div class="line"></div>
-<div class="line">using ::burg::simple::SimpleUserStore;</div>
-<div class="line">using ::burg::simple::SimpleRolesStore;</div>
-<div class="line">using ::burg::simple::Sha256Filter;</div>
+<div class="line">using ::burg::store::SimpleUserStore;</div>
+<div class="line">using ::burg::store::SimpleRolesStore;</div>
+<div class="line">using ::burg::filters::Sha256Filter;</div>
 <div class="line"></div>
-<div class="line">using ::burg::simple::SimpleRegexAuthorizer;</div>
-<div class="line">using ::burg::simple::SimpleRegexAuthenticator;</div>
-<div class="line">using ::burg::simple::PassRegex;</div>
-<div class="line">using ::burg::simple::CSVRegex;</div>
+<div class="line">using ::burg::auth::SimpleRegexAuthorizer;</div>
+<div class="line">using ::burg::auth::SimpleRegexAuthenticator;</div>
+<div class="line">using ::burg::auth::PassRegex;</div>
+<div class="line">using ::burg::auth::CSVRegex;</div>
 <div class="line"></div>
-<div class="line">using ::burg::simple::Role;</div>
+<div class="line">using ::burg::auth::Role;</div>
 <div class="line"></div>
 <div class="line"></div>
 <div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
@@ -161,7 +163,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="line">    <span class="comment">// completed. Therefore a factory method exists, to make spawning</span></div>
 <div class="line">    <span class="comment">// authenticators more convenient. After an authentication has finished,</span></div>
 <div class="line">    <span class="comment">// the Authenticator can be reused by another connection.</span></div>
-<div class="line">    burg::simple::simple_auth_t factory(</div>
+<div class="line">    burg::auth::simple_auth_t factory(</div>
 <div class="line">            <span class="keyword">new</span> SimpleRegexAuthenticator&lt;CSVRegex&gt;(user_store));</div>
 <div class="line">    burg::auth_t auth = factory-&gt;create();</div>
 <div class="line"></div>
