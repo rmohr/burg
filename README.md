@@ -1,7 +1,7 @@
 burg
 ====
 
-[![Build Status](https://travis-ci.org/rmohr/burg.svg?branch=develop)](https://travis-ci.org/rmohr/burg)
+[![Build Status](https://travis-ci.org/rmohr/burg.svg?branch=master)](https://travis-ci.org/rmohr/burg)
 
 Burg is a small extensible, flexible and easy to use authentication and authorization
 framework.
