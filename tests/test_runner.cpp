@@ -20,9 +20,12 @@
 #include <pwd.h>
 
 #include <boost/foreach.hpp>
-#include <burg/simple_db.h>
-#include <burg/simple_auth.h>
-#include <burg/pam_db.h>
+
+#include <burg/db/libconfig.h>
+#include <burg/auth/simple.h>
+#include <burg/store/simple.h>
+#include <burg/db/pam.h>
+#include <burg/filters/crypto.h>
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -35,17 +38,18 @@ using ::testing::Return;
 using ::testing::_;
 using ::testing::InSequence;
 
-using ::burg::simple::FileUserDB;
-using ::burg::simple::FileRolesDB;
-using ::burg::simple::SimpleUserStore;
 using ::burg::filters::Sha256Filter;
 using ::burg::filters::PlainFilter;
-using ::burg::simple::SimpleRolesStore;
-using ::burg::simple::SimpleRegexAuthenticator;
-using ::burg::simple::SimpleRegexAuthorizer;
-using ::burg::simple::CSVRegex;
-using ::burg::simple::PassRegex;
-using ::burg::simple::simple_auth_t;
+using ::burg::db::FileUserDB;
+using ::burg::db::FileRolesDB;
+using ::burg::store::SimpleUserStore;
+using ::burg::store::SimpleRolesStore;
+using ::burg::auth::SimpleRegexAuthenticator;
+using ::burg::auth::SimpleRegexAuthorizer;
+using ::burg::auth::CSVRegex;
+using ::burg::auth::PassRegex;
+using ::burg::auth::simple_auth_t;
+using ::burg::auth::Role;
 
 int main(int argc, char** argv) {
     ::testing::InitGoogleMock(&argc, argv);
@@ -53,15 +57,15 @@ int main(int argc, char** argv) {
 }
 
 TEST(basicTests, token) {
-    burg::token_t token = burg::token_t(new burg::simple::SimpleToken("roman"));
+    burg::token_t token = burg::token_t(new burg::auth::SimpleToken("roman"));
     ASSERT_EQ(token->id(), "roman");
 }
 
 TEST(basicTests, permissions) {
     burg::permission_t permission = burg::permission_t(
-            new burg::simple::Role("admin"));
+            new Role("admin"));
     burg::permission_t permission1 = burg::permission_t(
-            new burg::simple::Role("user"));
+            new Role("user"));
     ASSERT_TRUE(permission->satisfies(permission));
     ASSERT_FALSE(permission->satisfies(permission1));
     ASSERT_FALSE(permission1->satisfies(permission));
@@ -87,7 +91,7 @@ TEST(basicTests, libconfig_db) {
 
 TEST(basicTests, pam_db) {
     if (getpwnam("test") == NULL || getuid() != 0) return;
-    burg::user_db_t pam_db = burg::user_db_t(new burg::pam::PamUserDB("passwd"));
+    burg::user_db_t pam_db = burg::user_db_t(new burg::db::PamUserDB("passwd"));
     ASSERT_TRUE(pam_db->lookup("test", "test"));
     ASSERT_FALSE(pam_db->lookup("test1", "test"));
     ASSERT_FALSE(pam_db->lookup("test", "test1"));
@@ -168,9 +172,9 @@ TEST(fullChainTests, simpleTest) {
             new SimpleRegexAuthorizer<PassRegex>(roles_store));
     autz->set_permissions(token);
     burg::permission_t perm_yes = burg::permission_t(
-            new burg::simple::Role("admin"));
+            new Role("admin"));
     burg::permission_t perm_no = burg::permission_t(
-            new burg::simple::Role("blub"));
+            new Role("blub"));
 
     ASSERT_TRUE(token->has_permission(perm_yes));
     ASSERT_FALSE(token->has_permission(perm_no));

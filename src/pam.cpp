@@ -21,45 +21,45 @@
 #include <security/pam_appl.h>
 #include <stdio.h>
 
-#include <libconfig.h++>
-#include <crypt.h>
 #include <stdexcept>
 #include <string>
 
-#include "./pam_db.h"
-#include "./util.h"
+#include "./db/pam.h"
 
 #define TRY(x) ret = (x); if (ret != PAM_SUCCESS) goto finally
 
 namespace burg {
 
-    namespace pam {
+    namespace db {
 
-        int _test_conv(int num_msg, const struct pam_message **msg,
-                struct pam_response **resp, void *appdata_ptr){
-            const struct pam_message* msg_ptr = *msg;
-            struct pam_response * resp_ptr = NULL;
-            int x = 0;
-            const char* passwd = static_cast<const char*>(appdata_ptr);
-            *resp = reinterpret_cast<struct pam_response*>(calloc(sizeof(struct pam_response), num_msg));
-            for (x = 0; x < num_msg; x++, msg_ptr++){
-                char* resp_str;
-                switch (msg_ptr->msg_style){
-                    case PAM_PROMPT_ECHO_OFF:
-                    case PAM_PROMPT_ECHO_ON:
-                        resp[x]->resp= strdup(passwd);
-                        break;
+        namespace {
+            int _test_conv(int num_msg, const struct pam_message **msg,
+                    struct pam_response **resp, void *appdata_ptr){
+                const struct pam_message* msg_ptr = *msg;
+                struct pam_response * resp_ptr = NULL;
+                int x = 0;
+                const char* passwd = static_cast<const char*>(appdata_ptr);
+                *resp = reinterpret_cast<struct pam_response*>(
+                        calloc(sizeof(struct pam_response), num_msg));
+                for (x = 0; x < num_msg; x++, msg_ptr++){
+                    char* resp_str;
+                    switch (msg_ptr->msg_style){
+                        case PAM_PROMPT_ECHO_OFF:
+                        case PAM_PROMPT_ECHO_ON:
+                            resp[x]->resp= strdup(passwd);
+                            break;
 
-                    case PAM_ERROR_MSG:
-                    case PAM_TEXT_INFO:
-                        break;
+                        case PAM_ERROR_MSG:
+                        case PAM_TEXT_INFO:
+                            break;
 
-                    default:
-                        assert(0);
+                        default:
+                            assert(0);
 
+                    }
                 }
+                return PAM_SUCCESS;
             }
-            return PAM_SUCCESS;
         }
 
         PamUserDB::PamUserDB(const std::string& stack_name):
@@ -88,6 +88,6 @@ namespace burg {
             return ret == PAM_SUCCESS ? true : false;
         }
 
-    }  // namespace pam
+    }  // namespace db
 
 }  // namespace burg

@@ -18,8 +18,8 @@
  */
 
 
-#ifndef INCLUDE_BURG_FILTERS_H_
-#define INCLUDE_BURG_FILTERS_H_
+#ifndef INCLUDE_BURG_CRYPTO_FILTERS_H_
+#define INCLUDE_BURG_CRYPTO_FILTERS_H_
 
 #include <cryptopp/cryptlib.h>
 #include <cryptopp/filters.h>
@@ -27,33 +27,12 @@
 #include <cryptopp/base64.h>
 #include <cryptopp/base32.h>
 
-#include <map>
-#include <utility>
 #include <string>
 
-#include "./auth.h"
-#include "./db.h"
+#include "../auth.h"
+#include "../db.h"
 namespace burg {
     namespace filters {
-
-        /**
-         * @brief a policy to transform a password from one from into another
-         *
-         * in this case the plane filters does nothing but return the unmodified
-         * password.
-         */
-        struct PlainFilter {
-            /**
-             * @brief passes the given password through
-             *
-             * @param str password to transform
-             *
-             * @return unmodified password
-             */
-            std::string encrypt(const std::string& str) {
-                return str;
-            }
-        };
 
         /**
          * @brief transform a given password into sha256sum with base64
@@ -83,4 +62,4 @@ namespace burg {
 
     }  // namespace filters
 }  // namespace burg
-#endif  // INCLUDE_BURG_FILTERS_H_
+#endif  // INCLUDE_BURG_CRYPTO_FILTERS_H_

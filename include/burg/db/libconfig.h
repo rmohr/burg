@@ -18,8 +18,8 @@
  */
 
 
-#ifndef INCLUDE_BURG_SIMPLE_DB_H_
-#define INCLUDE_BURG_SIMPLE_DB_H_
+#ifndef INCLUDE_BURG_LIBCONFIG_DB_H_
+#define INCLUDE_BURG_LIBCONFIG_DB_H_
 
 #include <boost/algorithm/string.hpp>
 #include <boost/thread/shared_mutex.hpp>
@@ -28,11 +28,10 @@
 #include <utility>
 #include <string>
 
-#include "./auth.h"
-#include "./db.h"
-#include "./filters.h"
+#include "../auth.h"
+#include "../db.h"
 namespace burg {
-    namespace simple {
+    namespace db {
 
         /**
          * @brief a file based roles database
@@ -93,41 +92,6 @@ namespace burg {
             std::string _file_path;
             boost::shared_mutex _mutex;
         };
-
-        /**
-         * @brief takes usernames/passwords and tries to authenticate users
-         * agains a underlying UserDB
-         *
-         * @tparam Filter filter to transform a given password in an
-         * appropriate form for the underlying UserDB
-         */
-        template < class Filter = burg::filters::PlainFilter >
-            struct SimpleUserStore : public Filter, public UserStore {
-                using Filter::encrypt;
-
-                explicit SimpleUserStore(user_db_t db):_db(db) {}
-
-                bool authenticate(const std::string& user,
-                        const std::string& passwd) {
-                    return _db->lookup(user, encrypt(passwd));
-                }
-
-                private:
-                user_db_t _db;
-            };
-
-        /**
-         * @brief takes a username and tries to retrieve the associated roles
-         * from the underlying RolesDB
-         */
-        struct SimpleRolesStore : public RolesStore {
-            explicit SimpleRolesStore(roles_db_t db);
-
-            roles_vec_t get_roles(const std::string& user);
-
-            private:
-            roles_db_t _db;
-        };
-    }  // namespace simple
+    }  // namespace db
 }  // namespace burg
-#endif  // INCLUDE_BURG_SIMPLE_DB_H_
+#endif  // INCLUDE_BURG_LIBCONFIG_DB_H_

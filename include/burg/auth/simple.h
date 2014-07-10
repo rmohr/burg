@@ -28,11 +28,11 @@
 #include <string>
 #include <vector>
 
-#include "./auth.h"
-#include "./db.h"
+#include "../auth.h"
+#include "../db.h"
 
 namespace burg {
-    namespace simple {
+    namespace auth {
         /**
          * @brief simplest possible token which just passes through data when
          * calling encrypt() or decrypt()
@@ -244,6 +244,6 @@ namespace burg {
                 token->set_permissions(permissions);
             };
         };
-    }  // namespace simple
+    }  // namespace auth
 }  // namespace burg
 #endif  // INCLUDE_BURG_SIMPLE_AUTH_H_

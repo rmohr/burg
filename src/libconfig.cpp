@@ -23,12 +23,12 @@
 #include <stdexcept>
 #include <string>
 
-#include "./simple_db.h"
+#include "./db/libconfig.h"
 #include "./util.h"
 
 namespace burg {
 
-    namespace simple {
+    namespace db {
 
         FileUserDB::FileUserDB(const std::string& file_path):
             _file_path(file_path) {
@@ -113,12 +113,6 @@ namespace burg {
             return roles_vec_t(new roles_t_vec());
         }
 
-        SimpleRolesStore::SimpleRolesStore(roles_db_t db):_db(db) {}
-
-        roles_vec_t SimpleRolesStore::get_roles(const std::string& user) {
-            return _db->lookup(user);
-        }
-
-    }  // namespace simple
+    }  // namespace db
 
 }  // namespace burg

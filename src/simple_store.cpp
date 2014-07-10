@@ -18,38 +18,22 @@
  */
 
 
-#ifndef INCLUDE_BURG_PAM_H_
-#define INCLUDE_BURG_PAM_H_
-
-#include <boost/algorithm/string.hpp>
-#include <boost/thread/shared_mutex.hpp>
-
-#include <map>
-#include <utility>
+#include <stdexcept>
 #include <string>
 
-#include "./auth.h"
-#include "./db.h"
-
+#include "./store/simple.h"
+#include "./util.h"
 
 namespace burg {
-    namespace pam {
-        /**
-         * @brief pam user database
-         */
-        struct PamUserDB : public UserDB {
 
-            explicit PamUserDB(const std::string& stack_name);
+    namespace store {
 
-            void reload();
+        SimpleRolesStore::SimpleRolesStore(roles_db_t db):_db(db) {}
 
-            bool lookup(const std::string& user, const std::string& passwd);
+        roles_vec_t SimpleRolesStore::get_roles(const std::string& user) {
+            return _db->lookup(user);
+        }
 
-            private:
+    }  // namespace store
 
-            std::string _stack_name;
-
-        };
-    }  // namespace pam
 }  // namespace burg
-#endif  // INCLUDE_BURG_PAM_H_
