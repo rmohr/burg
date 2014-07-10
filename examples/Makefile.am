@@ -18,10 +18,13 @@
 #
 
 
+if HAVE_LIBCONFIG
+if HAVE_CRYPTO
 noinst_PROGRAMS = example
-
-LDADD = ../src/libburg.la $(INTLLIBS)
-#example_LDFLAGS = -lconfig++ -lboost_thread -lcryptopp -lpam
-
 example_CPPFLAGS = -I$(top_srcdir)/include
 example_SOURCES = example.cpp
+endif
+endif
+
+LDADD = ../src/libburg.la $(INTLLIBS)
+

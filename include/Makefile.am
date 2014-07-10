@@ -17,8 +17,17 @@
 # along with burg.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-nobase_include_HEADERS = burg/auth/simple.h burg/store/simple.h burg/filters/plain.h burg/filters/crypto.h burg/db/libconfig.h burg/db.h burg/auth.h
+nobase_include_HEADERS = burg/auth/simple.h burg/store/simple.h burg/filters/plain.h burg/db.h burg/auth.h
+
 if HAVE_PAM
 nobase_include_HEADERS += burg/db/pam.h
+endif
+
+if HAVE_LIBCONFIG
+nobase_include_HEADERS += burg/db/libconfig.h
+endif
+
+if HAVE_CRYPTO
+nobase_include_HEADERS += burg/filters/crypto.h
 endif
 

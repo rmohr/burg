@@ -41,7 +41,7 @@ PKG_CHECK_MODULES([CRYPTOPP], [libcrypto++ >= 5.6.0],[have_cryptopp=true],
                   [PKG_CHECK_MODULES([CRYPTOPP], [cryptopp >= 5.6.0],
                                      [have_cryptopp=true],
                                      [have_cryptopp=false]) ])
-AM_CONDITIONAL([HAVE_CRYPTO], [test x$have_crypto = xtrue])
+AM_CONDITIONAL([HAVE_CRYPTO], [test x$have_cryptopp = xtrue])
 
 AC_SEARCH_LIBS(pam_start, pam, [have_pam=true], [have_pam=false])
 AM_CONDITIONAL([HAVE_PAM], [test x$have_pam = xtrue])
