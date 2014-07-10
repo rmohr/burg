@@ -32,3 +32,9 @@ test_runner
 /doc
 /examples/example
 /img
+autoscan.log
+/tests/burg
+/tests/crypto
+/tests/pam
+/tests/libconfig
+configure.scan

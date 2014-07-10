@@ -18,10 +18,14 @@
 #
 
 
-TESTS = test_runner
-noinst_PROGRAMS = test_runner
+TESTS = pam libconfig burg crypto
+noinst_PROGRAMS = pam libconfig burg crypto
 
 LIBS = ../src/libburg.la ../lib/gmock/lib/libgmock.la ../lib/gmock/gtest/lib/libgtest.la  $(INTLLIBS) 
-test_runner_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/lib/gmock/include/ -I$(top_srcdir)/lib/gmock/gtest/include/
-test_runner_SOURCES = test_runner.cpp mock.h
+CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/lib/gmock/include/ -I$(top_srcdir)/lib/gmock/gtest/include/
+
+burg_SOURCES = burg.cpp mock.h
+crypto_SOURCES = crypto.cpp mock.h
+libconfig_SOURCES = libconfig.cpp
+pam_SOURCES = pam.cpp
 EXTRA_DIST = db.cfg
